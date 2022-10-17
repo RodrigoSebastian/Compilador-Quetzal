@@ -7,15 +7,18 @@ RESERVERD_WORDS = {
 }
 
 OPERATORS = {
-  '-' : 'OP_MINUS'        , '+' : 'OP_PLUS' , '*' : 'OP_MULTIPLY' , '/': 'OP_DIVIDE' , '%': 'OP_MODULO', 
-  '=' : 'OP_ASSIGN'       , '==': 'OP_EQUAL', '!=': 'OP_NOT_EQUAL', '>': 'OP_GREATER', '<': 'OP_LESS'  , 
-  '>=': 'OP_GREATER_EQUAL', '<=': 'OP_LESS_EQUAL'
+  '-': 'OP_MINUS' , '+': 'OP_PLUS'   , '*': 'OP_MULTIPLY' , '/': 'OP_DIVIDE' , '%': 'OP_MODULO', 
+  '=': 'OP_ASSIGN', '>': 'OP_GREATER', '<': 'OP_LESS'
+}
+
+DB_OPERATORS = {
+  '>=': 'OP_GREATER_EQUAL', '<=': 'OP_LESS_EQUAL', '==': 'OP_EQUAL', '!=': 'OP_NOT_EQUAL'
 }
 
 SYMBOLS = {
   '\n': 'SB_BREAK_LINE'   , ';' : 'SB_SEMI_COLON'      , ',': 'SB_COMMA'            , '.': 'SB_DOT'          ,
-  ':' : 'SB_COLON'        , '(' : 'SB_LEFT_PARENTHESIS', ')': 'SB_RIGHT_PARENTHESIS', '[' : 'SB_LEFT_BRACKET',
-  ']' : 'SB_RIGHT_BRACKET', '{' : 'SB_LEFT_BRACE'      , '}': 'SB_RIGHT_BRACE'      , '|' : 'SB_PIPE'        ,
+  ':' : 'SB_COLON'        , '(' : 'SB_LEFT_PARENTHESIS', ')': 'SB_RIGHT_PARENTHESIS', '[': 'SB_LEFT_BRACKET' ,
+  ']' : 'SB_RIGHT_BRACKET', '{' : 'SB_LEFT_BRACE'      , '}': 'SB_RIGHT_BRACE'      , '|': 'SB_PIPE'         ,
   '!' : 'SB_EXCLAMATION'  , '#' : 'SB_HASH'            , '@': 'SB_AT'               , '$': 'SB_DOLLAR'       ,
   '\t': 'SB_TAB'
 }
@@ -26,7 +29,7 @@ TEMP_RESERVED_WORDS = {
 
 IDENTIFIER = re.compile(r'[A-Za-z][A-Za-z0-9_]*')
 LITERA_INTEGER = re.compile(r'-?[0-9]+')
-LITERAL_CHAR = re.compile(r'\'[^\']*\'')
+LITERAL_CHAR = re.compile(r'\'[^\']\'')
 LITERAL_STRING = re.compile(r'"[^"]*"')
 COMMENT = re.compile(r"//.*")
 START_COMMENT_BLOCK = re.compile(r'/\*.*')

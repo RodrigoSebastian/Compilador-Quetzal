@@ -1,8 +1,10 @@
-perro = 0; /* perro 
-addasdassdas
-dasdaksdda
-sda
-sdaasd
-a
-sdasd
-addasdas dasdaksd */ perro2 = "perro";
+/* File: 001_hello.quetzal
+   The classical "hello, world" program.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+main() {
+    prints("hello, world\n");;;
+    prints('x');
+    return 42;;;
+}
