@@ -1,0 +1,9 @@
+{
+    'Identifiers' : '(^[A-Za-z][A-Za-z0-9_]*)'
+    ,'Keywords' : '['and','false','or','break','if','return','dec','inc','true','elif','loop','var','else','not']' 
+    ,'LiteralBooleans' : '(true|false|0|1)' 
+    ,'LiteralIntegers' : '(-?[\d]+)'
+    ,'LiteralCharacter' : '\'(.*?)\''
+    ,'LiteralString' : '\"(.*?)\"'
+    ,'Operators' : '['-','+','*','/','%','not','and','or','=','==','!=','>','<','>=','<=','^f\((.*?)\)$']
+}
