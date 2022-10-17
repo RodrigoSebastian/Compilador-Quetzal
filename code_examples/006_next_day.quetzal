@@ -1,0 +1,78 @@
+/* File: 006_next_day.quetzal
+   Given the date of a certain day, determines the date of the day after.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+// Returns true if y is a leap year, otherwise returns false.
+is_leap_year(y) {
+    if (y % 4 == 0) {
+        if (y % 100 == 0) {
+            if (y % 400 == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
+ }
+
+// Returns the total number of days in month m of year y.
+number_of_days_in_month(y, m) {
+    var result;
+    if (m == 2) {
+        if (is_leap_year(y)) {
+            result = 29;
+        } else {
+            result = 28;
+        }
+    } elif (m == 4 or m == 6 or m == 9 or m == 11) {
+        result = 30;
+    } else {
+        result = 31;
+    }
+    return result;
+}
+
+// Given y, m, d (year, month day), returns the handle of a new array list
+// with the date of the following day.
+next_day(y, m, d) {
+    if (d == number_of_days_in_month(y, m)) {
+        if (m == 12) {
+            return [y + 1, 1, 1];
+        } else {
+            return [y, m + 1, 1];
+        }
+    } else {
+        return [y, m, d + 1];
+    }
+}
+
+// Prints the given date (y, m, d) and the date of the following day.
+print_next_day(y, m, d) {
+    var next;
+    prints("The day after ");
+    printi(y);
+    printc('/');
+    printi(m);
+    printc('/');
+    printi(d);
+    prints(" is ");
+    next = next_day(y, m, d);
+    printi(get(next, 0));
+    printc('/');
+    printi(get(next, 1));
+    printc('/');
+    printi(get(next, 2));
+    println();
+}
+
+main() {
+    print_next_day(2020, 2, 28);
+    print_next_day(2021, 2, 13);
+    print_next_day(2021, 2, 28);
+    print_next_day(2021, 12, 31);
+}

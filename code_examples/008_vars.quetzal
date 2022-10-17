@@ -1,0 +1,61 @@
+/* File: vars.quetzal
+   Example using global and local variables.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+var a;
+
+x(b) {
+    var c;
+    c = 5;
+    prints("Function x\n");
+    prints("a = ");
+    printi(a);
+    println();
+    prints("b = ");
+    printi(b);
+    println();
+    prints("c = ");
+    printi(c);
+    println();
+}
+
+var b, c;
+
+main() {
+    var x;
+    a = 1;
+    b = 2;
+    c = 3;
+    x = 4;
+    x(x);
+    prints("Function main\n");
+    prints("a = ");
+    printi(a);
+    println();
+    prints("b = ");
+    printi(b);
+    println();
+    prints("c = ");
+    printi(c);
+    println();
+    prints("x = ");
+    printi(x);
+    println();
+}
+
+/*
+
+This program should print:
+
+Function x
+a = 1
+b = 4
+c = 5
+Function main
+a = 1
+b = 2
+c = 3
+x = 4
+
+*/

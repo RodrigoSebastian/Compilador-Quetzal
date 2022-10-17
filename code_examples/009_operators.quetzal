@@ -1,0 +1,111 @@
+/* File: operators.quetzal
+   Verifies that the implementation of all the operators
+   meet the specified requirements.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+var fails;
+var asserts;
+
+assert(value1, value2, message) {
+    inc asserts;
+    if (value1 != value2) {
+        inc fails;
+        prints("Assertion failure: ");
+        prints(message);
+        println();
+    }
+}
+
+// By default a function returns 0.
+some_fun() {
+}
+
+// Always returns true
+true_fun() {
+    return true;
+}
+
+// Always returns false
+false_fun() {
+    return false;
+}
+
+// Should never be called
+never_called() {
+    assert(false, true, "error in short circuit operator");
+}
+
+main() {
+
+    fails = 0;
+    asserts = 0;
+
+    assert(-0, 0, "error in unary minus");
+    assert(-5, - - - 5, "error in unary minus");
+    assert(7, - - 7, "error in unary minus");
+
+    assert(0, +0, "error in unary plus");
+    assert(5, + + + 5, "error in unary plus");
+    assert(7, + + 7, "error in unary plus");
+
+    assert(0, 42 * 0, "error in multiplication");
+    assert(42, 6 * 7, "error in multiplication");
+    assert(42, -6 * -7, "error in multiplication");
+    assert(-42, 6 * -7, "error in multiplication");
+
+    assert(0, 1 / 2, "error in division");
+    assert(6, 20 / 3, "error in division");
+    assert(-6, -20 / 3, "error in division");
+    assert(6, -20 / -3, "error in division");
+
+    assert(2, 20 % 3, "error in remainder");
+    assert(-2, -20 % 3, "error in remainder");
+    assert(-2, -20 % -3, "error in remainder");
+
+    assert(42, 22 + 20, "error in addition");
+    assert(2, 22 + -20, "error in addition");
+    assert(-42, -22 + -20, "error in addition");
+
+    assert(42, 80 - 38, "error in substraction");
+    assert(-118, -80 - 38, "error in substraction");
+    assert(-42, -80 - -38, "error in substraction");
+
+    assert(0, not true, "error in logical NOT");
+    assert(1, not false, "error in logical NOT");
+    assert(0, not not not true, "error in logical NOT");
+
+    assert(0, false and false, "error in logical AND");
+    assert(0, true and false, "error in logical AND");
+    assert(0, false and true, "error in logical AND");
+    assert(1, true and true, "error in logical AND");
+    assert(0, false_fun() and never_called(), "error in logical AND");
+
+    assert(0, false or false, "error in logical OR");
+    assert(1, true or false, "error in logical OR");
+    assert(1, false or true, "error in logical OR");
+    assert(1, true or true, "error in logical OR");
+    assert(1, true_fun() or never_called(), "error in logical OR");
+
+    assert(1, 42 == 42, "error in equal to");
+    assert(0, 42 == 43, "error in equal to");
+    assert(1, 42 != 43, "error in not equal to");
+    assert(0, 42 != 42, "error in not equal to");
+    assert(1, 43 > 42, "error in greater than");
+    assert(0, 42 > 42, "error in greater than");
+    assert(1, 42 < 43, "error in less than");
+    assert(0, 42 < 42, "error in less than");
+    assert(1, 43 >= 42, "error in greater or equal");
+    assert(1, 42 >= 42, "error in greater or equal");
+    assert(0, 42 >= 43, "error in greater or equal");
+    assert(1, 42 <= 43, "error in less or equal");
+    assert(1, 42 <= 42, "error in less or equal");
+    assert(0, 43 <= 42, "error in less or equal");
+
+    assert(0, some_fun(), "error in function call");
+
+    printi(fails);
+    prints(" failure(s) found in ");
+    printi(asserts);
+    prints(" assertion(s).\n");
+}

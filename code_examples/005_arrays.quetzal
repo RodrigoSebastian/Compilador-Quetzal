@@ -1,0 +1,114 @@
+/* File: 005_arrays.quetzal
+   Implementation of typical array operations.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+// Prints all the elements in the array list referred by handle a.
+print_array(a) {
+    var first, i, n;
+    first = true;
+    printc('[');
+    i = 0;
+    n = size(a);
+    loop {
+        if (i >= n) {
+            break;
+        }
+        if (first) {
+            first = false;
+        } else {
+            prints(", ");
+        }
+        printi(get(a, i));
+        inc i;
+    }
+    printc(']');
+}
+
+// Returns the addition of all elements in the array list referred by handle a.
+sum_array(a) {
+    var sum, i, n;
+    sum = 0;
+    i = 0;
+    n = size(a);
+    loop {
+        if (i >= n) {
+            break;
+        }
+        sum = sum + get(a, i);
+        inc i;
+    }
+    return sum;
+}
+
+// Returns the largest element in the array list referred by handle a.
+max_array(a) {
+    var max, i, n, x;
+    max = get(a, 0);
+    i = 0;
+    n = size(a);
+    loop {
+        if (i >= n) {
+            break;
+        }
+        x = get(a, i);
+        if (x > max) {
+            max = x;
+        }
+        inc i;
+    }
+    return max;
+}
+
+// Sorts in-place the elements in the array list referred by handle a.
+sort_array(a) {            /////////////////////////////////////////
+    var i, j, t, n, swap;  // THIS FUNCTION IMPLEMENTS THE BUBBLE //
+    n = size(a);           // SORT ALGORITHM.                     //
+    i = 0;                 /////////////////////////////////////////
+    loop {
+        if (i >= n - 1) {
+            break;
+        }
+        j = 0;
+        swap = false;
+        loop {
+            if (j >= n - i - 1) {
+                break;
+            }
+            if (get(a, j) > get(a, j + 1)) {
+                t = get(a, j);
+                set(a, j, get(a, j + 1));
+                set(a, j + 1, t);
+                swap = true;
+            }
+            inc j;
+        }
+        if (not swap) { // Stop when no more swaps were carried out.
+            break;
+        }
+        inc i;
+    }
+}
+
+main() {
+    var array, sum, max;
+    array = [73, 77, 56, 10, 14,
+             54, 75, 62, 71, 10,
+              3, 71, 16, 49, 66,
+             91, 69, 62, 25, 65];
+    prints("Original array: ");
+    print_array(array);
+    println();
+    sum = sum_array(array);
+    max = max_array(array);
+    prints("Sum of array:   ");
+    printi(sum);
+    println();
+    prints("Max of array:   ");
+    printi(max);
+    println();
+    sort_array(array);
+    prints("Sorted array:   ");
+    print_array(array);
+    println();
+}
