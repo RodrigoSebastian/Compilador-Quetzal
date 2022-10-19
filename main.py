@@ -16,4 +16,5 @@ if __name__ == "__main__":
   definitions = Get_tokens_list_from_file("./code_examples/000_test.quetzal", debug_mode=debug_mode)
   # definitions = Get_tokens_list_from_file("./code_examples/001_hello.quetzal", debug_mode=debug_mode)
   # definitions = Get_tokens_list_from_file("./code_examples/002_binary.quetzal", debug_mode=debug_mode)
+  # definitions = Get_tokens_list_from_file("./code_examples/012_other_characters.quetzal", debug_mode=debug_mode)
   # print_tokens(definitions)
