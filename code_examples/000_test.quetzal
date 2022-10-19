@@ -1,10 +1,1 @@
-/* File: 001_hello.quetzal
-   The classical "hello, world" program.
-   (C) 2022 Ariel Ortiz, ITESM CEM.
-*/
-
-main() {
-    prints("hello, world\n");;;
-    prints('x');
-    return 42;;;
-}
+assert('\"', 34, "error in double quote literal");
