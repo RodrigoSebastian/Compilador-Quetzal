@@ -1,7 +1,7 @@
 [Insertar logo aquí]
 
 ## Proyecto de Compiladores
-## Version: 1.0.0
+## Version: 1.2.0
 ### Autores:
 ### - Rodrigo Sebastián de la Rosa Andrés
 ### - Israel Sanchez Hinojosa
