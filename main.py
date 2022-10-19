@@ -9,11 +9,11 @@ if __name__ == "__main__":
     if sys.argv[1] == "debug":
       debug_mode = True
 
-  # files = os.listdir('./code_examples')
-  # for file in files:
-  #   definitions = Get_tokens_list_from_file('./code_examples/{0}'.format(file), debug_mode)
-  #   print(" ")
-  #   print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-  #   print(" ")
+  files = os.listdir('./code_examples')
+  for file in files:
+    definitions = Get_tokens_list_from_file('./code_examples/{0}'.format(file), debug_mode)
+    print(" ")
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+    print(" ")
 
-  definitions = Get_tokens_list_from_file("./code_examples/000_test.quetzal", debug_mode=debug_mode)
+  # definitions = Get_tokens_list_from_file("./code_examples/000_test.quetzal", debug_mode=debug_mode)

@@ -88,14 +88,14 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   line = line.strip('\n')                              #! Elimina los saltos de linea
   logger.debug("Reading line: "+ line)
 
-  #! Reemplazamos los strings por un token
-  line = replace_token_by_tory(defs.LITERAL_STRING, line, ' TP_STRING ')
   #! Reemplazamos los caracteres speciales por un token
   line = replace_token_by_tory(defs.LITERAL_SPECIAL_CHAR, line, ' TP_SP_CHAR ')
   #! Reemplazamos los caracteres unicode por un token
   line = replace_token_by_tory(defs.LITERAL_UNICODE_CHAR, line, ' TP_UC_CHAR ')
   #! Reemplazamos los caracteres por un token
   line = replace_token_by_tory(defs.LITERAL_CHAR, line, ' TP_CHAR ')
+  #! Reemplazamos los strings por un token
+  line = replace_token_by_tory(defs.LITERAL_STRING, line, ' TP_STRING ')
   
   #! Quitamos todos los comentarios existentes en la linea
   line = replace_token_by_tory(defs.COMMENT, line) 
@@ -138,6 +138,18 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
         tokens_types.append({'type': defs.RESERVERD_WORDS[token], 'value': token})
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
+        if token == 'TP_STRING':
+          value = []
+          split_string = GL_LISTS[token][0].split(' ')
+          for string in split_string:
+            if string in GL_LISTS:
+              new_string = GL_LISTS[string][0]
+              GL_LISTS[string].pop(0)
+              value.append(new_string)
+            else:
+              value.append(string)
+          GL_LISTS[token][0] = ' '.join(value)
+
         tokens_types.append({'type': defs.TEMP_RESERVED_WORDS[token], 'value': GL_LISTS[token][0]})
         GL_LISTS[token].pop(0)
       else:
