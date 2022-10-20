@@ -85,14 +85,19 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   if is_comment_block:                                 #! Si es un bloque de comentario, no se hace nada
     return [], is_comment_block
 
-  logger.debug("Reading line: "+ line.strip('\n'))
+  line = line.strip('\n')                              #! Elimina los saltos de linea
+  logger.debug("Reading line: "+ line)
 
-  #! Reemplazamos los strings por un token
-  line = replace_token_by_tory(defs.LITERAL_STRING, line, ' TP_STRING ')
+  #! Reemplazamos los caracteres speciales por un token
+  line = replace_token_by_tory(defs.LITERAL_SPECIAL_CHAR, line, ' TP_SP_CHAR ')
+  #! Reemplazamos los caracteres unicode por un token
+  line = replace_token_by_tory(defs.LITERAL_UNICODE_CHAR, line, ' TP_UC_CHAR ')
   #! Reemplazamos los caracteres por un token
   line = replace_token_by_tory(defs.LITERAL_CHAR, line, ' TP_CHAR ')
+  #! Reemplazamos los strings por un token
+  line = replace_token_by_tory(defs.LITERAL_STRING, line, ' TP_STRING ')
   
-  #! Quitamos todos los split_linecomentarios existentes en la linea
+  #! Quitamos todos los comentarios existentes en la linea
   line = replace_token_by_tory(defs.COMMENT, line) 
   if(len(defs.START_COMMENT_BLOCK.findall(line)) > 0): #! Si la linea tiene un inicio de bloque de comentarios entonces
     is_comment_block = True                            #! se activa el modo de bloque de comentarios ignorando todas las
@@ -133,6 +138,18 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
         tokens_types.append({'type': defs.RESERVERD_WORDS[token], 'value': token})
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
+        if token == 'TP_STRING':
+          value = []
+          split_string = GL_LISTS[token][0].split(' ')
+          for string in split_string:
+            if string in GL_LISTS:
+              new_string = GL_LISTS[string][0]
+              GL_LISTS[string].pop(0)
+              value.append(new_string)
+            else:
+              value.append(string)
+          GL_LISTS[token][0] = ' '.join(value)
+
         tokens_types.append({'type': defs.TEMP_RESERVED_WORDS[token], 'value': GL_LISTS[token][0]})
         GL_LISTS[token].pop(0)
       else:
@@ -161,21 +178,20 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
 
 def Get_tokens_list_from_file(file_name, debug_mode = False):
   stream_handler.setFormatter(logging.Formatter('\033[92m'+'%(asctime)s:%(levelname)s: '+'\033[0m'+'%(message)s'))
-  logger.debug("Starting Quetzal compiler...")
-  stream_handler.setFormatter(stream_formatter)
+  logger.info("Starting Quetzal compiler...")
 
   logger.setLevel(logging.DEBUG) if debug_mode else logger.setLevel(logging.INFO)
   file_handler.setLevel(logging.DEBUG) if debug_mode else file_handler.setLevel(logging.INFO)
-
 
   file_type = file_name.split(".")[-1]
   if file_type == "quetzal":
     file = open(file_name, "r")
 
-    important_initialization()
-    logger.debug("Reading file: " + file_name)
+    logger.info("Reading file: " + file_name)
+    stream_handler.setFormatter(stream_formatter)
     file_lines = file.readlines()
     print_break_line()
+    important_initialization()
 
     tokens = []
     is_comment_block = False
@@ -189,8 +205,7 @@ def Get_tokens_list_from_file(file_name, debug_mode = False):
     print_tokens(definitions)
 
     stream_handler.setFormatter(logging.Formatter('\033[92m'+'%(asctime)s:%(levelname)s: '+'\033[0m'+'%(message)s'))
-    logger.setLevel(logging.DEBUG)
-    logger.debug("The code has been compiled successfully")
+    logger.info("The code has been compiled successfully")
     
     return definitions
 

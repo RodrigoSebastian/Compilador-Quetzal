@@ -24,13 +24,15 @@ SYMBOLS = {
 }
 
 TEMP_RESERVED_WORDS = {
-  'TP_STRING': 'TP_STRING', 'TP_CHAR': 'TP_CHAR'
+  'TP_STRING': 'TP_STRING', 'TP_CHAR': 'TP_CHAR', 'TP_SP_CHAR': 'TP_SP_CHAR', 'TP_UC_CHAR': 'TP_UC_CHAR'
 }
 
 IDENTIFIER = re.compile(r'[A-Za-z][A-Za-z0-9_]*')
 LITERA_INTEGER = re.compile(r'-?[0-9]+')
 LITERAL_CHAR = re.compile(r'\'[^\']\'')
-LITERAL_STRING = re.compile(r'"[^"]*"')
+LITERAL_SPECIAL_CHAR = re.compile(r'(\'\\[tnr\\\'"]\')')
+LITERAL_UNICODE_CHAR = re.compile(r'\'\\u[0-9a-fA-F]{6}\'')
+LITERAL_STRING = re.compile(r'"(?:[^\\"]|\\.)*"')
 COMMENT = re.compile(r"//.*")
 START_COMMENT_BLOCK = re.compile(r'/\*.*')
 END_COMMENT_BLOCK = re.compile(r'.*\*/')
