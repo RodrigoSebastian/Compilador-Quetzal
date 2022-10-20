@@ -22,12 +22,14 @@ El compilador esta implementado en Python 3.10.4
 ## Modo de uso
 Antes de hacer uso del compilador, asegurate de instalar la libreria de "tabulate" ``` pip install tabulate```
 Para ejecutar el compilador, ejecuta el comando: 
-``` py main.py ``` en **Windows**
-``` python3 main.py ``` en **Mac/GNU Linux**
+
+- ``` py main.py ``` en **Windows**
+- ``` python3 main.py ``` en **Mac/GNU Linux**
 
 Para mostrar una version detallada del procedimiento interno del compilador añade el parametro "debug" al comando anterior:
-``` py main.py debug ``` en **Windows**
-``` python3 main.py debug ``` en **Mac/GNU Linux**
+
+- ``` py main.py debug ``` en **Windows**
+- ``` python3 main.py debug ``` en **Mac/GNU Linux**
 
 ## Procedimiento
 
@@ -61,6 +63,6 @@ Pasos que sigue el proyecto para compilar un programa en Quetzal:
    limitations under the License.
 ```
 ## Autores
-- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian"><img src="img/git.png" height="15rem" style="margin-left: 1rem;"></a>
-- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14"><img src="img/git.png" height="15rem" style="margin-left: 1rem;"></a>
-- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10"><img src="img/git.png" height="15rem" style="margin-left: 1rem;"></a>
+- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian"><img src="img/git.png" height="15rem" style="margin-left: 2rem;"></a>
+- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14"><img src="img/git.png" height="15rem" style="margin-left: 2rem;"></a>
+- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10"><img src="img/git.png" height="15rem" style="margin-left:2rem;"></a>
