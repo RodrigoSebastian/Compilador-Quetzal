@@ -77,13 +77,13 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   is_comment_block = _is_comment_block
 
   if line == '\n':                                     #! Si la linea esta vacia, no hacer nada
-    return [], is_comment_block
+    return [], is_comment_block, False
 
   if(len(defs.END_COMMENT_BLOCK.findall(line)) > 0):   #! Verifica si la linea es un fin de bloque de comentario
     is_comment_block = False
 
   if is_comment_block:                                 #! Si es un bloque de comentario, no se hace nada
-    return [], is_comment_block
+    return [], is_comment_block, False
 
   line = line.strip('\n')                              #! Elimina los saltos de linea
   logger.debug("Reading line: "+ line)
@@ -99,12 +99,12 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   
   #! Quitamos todos los comentarios existentes en la linea
   line = replace_token_by_tory(defs.COMMENT, line) 
+  line = replace_token_by_tory(defs.COMMENT_BLOCK, line)
   if(len(defs.START_COMMENT_BLOCK.findall(line)) > 0): #! Si la linea tiene un inicio de bloque de comentarios entonces
     is_comment_block = True                            #! se activa el modo de bloque de comentarios ignorando todas las
                                                        #! demás lineas hasta que se encuentre un fin de bloque de comentarios
   line = replace_token_by_tory(defs.START_COMMENT_BLOCK, line)
   line = replace_token_by_tory(defs.END_COMMENT_BLOCK, line)
-  line = replace_token_by_tory(defs.COMMENT_BLOCK, line)
 
   for db_operator in defs.DB_OPERATORS:                #! Reemplazamos los operadores dobles por un token
     temp_key = 'TP_{0}'.format(defs.DB_OPERATORS[db_operator])
@@ -169,16 +169,18 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
       stream_handler.setFormatter(logging.Formatter('\033[91m'+'%(asctime)s:%(levelname)s: %(message)s'))
       logger.error(msg)
       stream_handler.setFormatter(stream_formatter)
-      sys.exit(1)
+      return [], False, True
 
   logger.debug("Resulting tokens: " + str(tokens_types))
 
   print_break_line()
-  return tokens_types, is_comment_block
+  return tokens_types, is_comment_block, False
 
-def Get_tokens_list_from_file(file_name, debug_mode = False):
+def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
   stream_handler.setFormatter(logging.Formatter('\033[92m'+'%(asctime)s:%(levelname)s: '+'\033[0m'+'%(message)s'))
   logger.info("Starting Quetzal compiler...")
+  if debug_mode:
+    logger.info("Debug mode activated. The compiler will show more information about the process")
 
   logger.setLevel(logging.DEBUG) if debug_mode else logger.setLevel(logging.INFO)
   file_handler.setLevel(logging.DEBUG) if debug_mode else file_handler.setLevel(logging.INFO)
@@ -196,21 +198,35 @@ def Get_tokens_list_from_file(file_name, debug_mode = False):
     tokens = []
     is_comment_block = False
     line_number = 1
+    error = False
+    definitions = []
     for line in file_lines:
-      temp_tokens, is_comment_block = Get_tokens_list_from_line(line, is_comment_block, line_number)
+      temp_tokens, is_comment_block, error = Get_tokens_list_from_line(line, is_comment_block, line_number)
+      if error:
+        if test_mode:
+          break;
+        sys.exit(1)
       tokens.append(temp_tokens)
       line_number += 1
-    definitions = [item for sublist in tokens for item in sublist]
+    
+    if error == False:
+      definitions = [item for sublist in tokens for item in sublist]
 
-    print_tokens(definitions)
+      print_tokens(definitions)
 
-    stream_handler.setFormatter(logging.Formatter('\033[92m'+'%(asctime)s:%(levelname)s: '+'\033[0m'+'%(message)s'))
-    logger.info("The code has been compiled successfully")
+      stream_handler.setFormatter(logging.Formatter('\033[92m'+'%(asctime)s:%(levelname)s: '+'\033[0m'+'%(message)s'))
+      
+      logger.info("The code has been compiled successfully")
+
+    if test_mode:
+      print(" ")
+      print('\033[0m'+"$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+      print(" ")
     
     return definitions
 
   else:
     stream_handler.setFormatter(logging.Formatter('\033[91m'+'%(asctime)s:%(levelname)s: %(message)s'))
-    logger.error("File type not supported. Only .quetzal files are supported")
+    logger.error("({0}) File type not supported. Only .quetzal files are supported".format(file_name))
     stream_handler.setFormatter(stream_formatter)
     return
