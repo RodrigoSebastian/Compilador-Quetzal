@@ -1,15 +1,19 @@
-import sys
 import os
 import click
 from lexical_reader import Get_tokens_list_from_file
 
+CURRENT_VERSION = '1.2.1'
+
 @click.command()
-@click.option('--file', '-f', help='The path to the file to be compiled [required if test mode is not enabled]', type=click.Path(exists=True), required=False)
+@click.option('--file', '-f', help='The path to the file to be compiled [required if test mode is not enabled]', type=click.Path(exists=True))
+@click.option('--test', '-t', help='Run the compiler with all the test files in this folder [required if file mode is not enabled]', type=click.Path(exists=True))
 @click.option('--debug', '-d', help='Enable debug mode to show detailed information about the process', is_flag=True)
-@click.option('--test', '-t', help='Run the compiler with all the test files in this folder', type=click.Path(exists=True), required=False)
-def veg(file, debug, test):
+@click.option('--version', '-v', help='Show the current version of the compiler', is_flag=True)
+def veg(file, debug, test,version):
   debug_mode = debug
-  if file:
+  if version:
+    click.echo("Quetzal compiler version {0}".format(CURRENT_VERSION))
+  elif file:
     Get_tokens_list_from_file(file,debug_mode)
   elif test:
     if os.path.isdir(test):

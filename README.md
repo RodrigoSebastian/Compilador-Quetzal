@@ -4,14 +4,13 @@
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 1.2.0 <!-- omit in toc --> 
+## Version: 1.2.1 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
 - [Procedimiento](#procedimiento)
 - [Licencia](#licencia)
 - [Autores](#autores)
-
 
 
 ## Introduccion
