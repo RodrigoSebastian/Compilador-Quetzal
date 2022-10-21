@@ -74,6 +74,7 @@ def replace_token_by_tory(_type_token, _line, _name = ""):
   return line
 
 def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
+  original_line = line
   is_comment_block = _is_comment_block
 
   if line == '\n':                                     #! Si la linea esta vacia, no hacer nada
@@ -164,8 +165,9 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
     elif token in defs.SYMBOLS:
       tokens_types.append({'type': defs.SYMBOLS[token], 'value': token})
     else:
+      error_position = original_line.find(token) + 1
       token = token.strip('\n')
-      msg = "In line {0} → Token {1} is not valid{2}".format(line_number, token, err.get_error_info(token))
+      msg = "In line {0}, position {1} → Token {2} is not valid{3}".format(line_number, error_position, token, err.get_error_info(token))
       stream_handler.setFormatter(logging.Formatter('\033[91m'+'%(asctime)s:%(levelname)s: %(message)s'))
       logger.error(msg)
       stream_handler.setFormatter(stream_formatter)

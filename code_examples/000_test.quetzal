@@ -1,1 +1,16 @@
-"PErrto 'd' tambien 'p' tmbien '\"' y por ultimo '\n'"
+// Inverts in-place the contents of an array list.
+reverse(array) {
+    var start, finish, temp;
+    start = 0;
+    finish = size(array) - 1;
+    loop {
+        if (start >= finish) {
+           break;
+        }
+        temp = get(array, start);
+        set(array, start, get(array, finish));
+        set(array, finish, temp);
+        inc start;
+        dec finish;
+    }
+}
