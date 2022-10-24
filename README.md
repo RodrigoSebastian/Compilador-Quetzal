@@ -19,16 +19,28 @@ Lenguaje consultado en: https://arielortiz.info/s202211/tc3048/quetzal/quetzal_l
 El compilador esta implementado en Python 3.10.4
 
 ## Modo de uso
-Antes de hacer uso del compilador, asegurate de instalar la libreria de "tabulate" ``` pip install tabulate```
+Antes de hacer uso del compilador, asegurate de instalar las librerias de:
+- "tabulate" ``` pip install tabulate```
+- "pandas" ``` pip install pandas```
 Para ejecutar el compilador, ejecuta el comando: 
 
-- ``` py main.py ``` en **Windows**
-- ``` python3 main.py ``` en **Mac/GNU Linux**
+- ``` py quetzal_compiler.py [OPTIONS]``` en **Windows**
+- ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
 Para mostrar una version detallada del procedimiento interno del compilador añade el parametro "debug" al comando anterior:
 
 - ``` py main.py debug ``` en **Windows**
 - ``` python3 main.py debug ``` en **Mac/GNU Linux**
+
+Comandos:
+Usage: quetzal_compiler.py [OPTIONS]
+
+Options:
+  -f, --file PATH  The path to the file to be compiled [required if test mode is not enabled]
+  -t, --test PATH  Run the compiler with all the test files in this folder [required if file mode is not enabled]
+  -d, --debug      Enable debug mode to show detailed information about the process
+  -v, --version    Show the current version of the compiler
+  --help           Show this message and exit.
 
 ## Procedimiento
 

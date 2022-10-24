@@ -34,7 +34,8 @@ def veg(file, debug, test,version):
     else:
       click.echo("The path is not a directory")
   else:
-    click.echo('Please provide a file to read')
+    click.echo('Please provide a file to read with a --file or --test option')
+    click.echo('Use --help for more information')
 
 if __name__ == "__main__":
   veg()
