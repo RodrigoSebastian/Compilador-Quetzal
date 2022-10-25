@@ -68,7 +68,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   clogger.debug("Reading line: "+ line)
 
   #! Reemplazamos los caracteres speciales por un token
-  line = replace_token_by_tory(defs.LITERAL_SPECIAL_CHAR, line, ' TP_SP_CHAR ')
+  line = replace_token_by_tory(defs.LITERAL_ESCAPED_CHAR, line, ' TP_ES_CHAR ')
   #! Reemplazamos los caracteres unicode por un token
   line = replace_token_by_tory(defs.LITERAL_UNICODE_CHAR, line, ' TP_UC_CHAR ')
   #! Reemplazamos los caracteres por un token
