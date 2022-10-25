@@ -1,15 +1,15 @@
-import definitions as defs
+import src.lexical.definitions as defs
 from tabulate import tabulate
 import logging
 import os
 import re
 import sys
-import error_manage as err
+import src.error_manage as err
 
-#! Create log_info folder if it doesn't exist
+#! Crea la carpeta log_info si no existe
 os.mkdir('log_info') if not os.path.exists('log_info') else None
 
-#! Configure logger to manage errors and warnings
+#! Configura el logger para manejar errores y advertencias
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
