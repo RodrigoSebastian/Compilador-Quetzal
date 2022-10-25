@@ -29,7 +29,7 @@ Para ejecutar el compilador, ejecuta el comando:
 - ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
 ### OPTIONS:
-  * ```-f, --file``` PATH  La ruta al archivo a compilar [requerido si el modo de ```--test``` no esta activado]
+  * ```-f, --file PATH```  La ruta al archivo a compilar [requerido si el modo de ```--test``` no esta activado]
 
   * ```-t, --test PATH```  Ejecuta el compilador con todos los archivos de prueba en esta carpeta [requerido si el modo ```--file``` no esta activado]
 
