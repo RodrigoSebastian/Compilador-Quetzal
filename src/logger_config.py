@@ -14,12 +14,13 @@ class LoggerConfig(logging.Formatter):
 
   def __init__(self, fmt_prefix=format_prefix, fmt_suffix=format_suffix):
     super().__init__()
+    error_format_suffix = '%(message)s'
     self.FORMATS = {
       logging.DEBUG: self.green + fmt_prefix + self.reset + fmt_suffix,
       logging.INFO: self.blue + fmt_prefix + self.reset + fmt_suffix,
       logging.WARNING: self.yellow + fmt_prefix + self.reset + fmt_suffix,
-      logging.ERROR: self.red + fmt_prefix + self.reset + fmt_suffix,
-      logging.CRITICAL: self.bold_red + fmt_prefix + self.reset + fmt_suffix
+      logging.ERROR: self.red + fmt_prefix + error_format_suffix + self.reset,
+      logging.CRITICAL: self.bold_red + fmt_prefix + error_format_suffix + self.reset
     }
 
   def change_prefix(self, prefix):
