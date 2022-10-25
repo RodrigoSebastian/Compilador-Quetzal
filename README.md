@@ -20,8 +20,8 @@ El compilador esta implementado en Python 3.10.4
 
 ## Modo de uso
 Antes de hacer uso del compilador, asegurate de instalar las librerias de:
-- "tabulate" ``` pip install tabulate```
-- "pandas" ``` pip install pandas```
+- "tabulate" ``` -> pip install tabulate```
+- "pandas" ``` -> pip install pandas```
 
 Para ejecutar el compilador, ejecuta el comando: 
 
@@ -29,7 +29,7 @@ Para ejecutar el compilador, ejecuta el comando:
 - ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
 ### Comandos:
-Uso: ```quetzal_compiler.py``` [OPTIONS]
+Uso: ```quetzal_compiler.py [OPTIONS]```
 
 Options:
 
