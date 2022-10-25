@@ -4,7 +4,7 @@
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 1.2.1 <!-- omit in toc --> 
+## Version: 1.2.2 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
@@ -22,6 +22,7 @@ El compilador esta implementado en Python 3.10.4
 Antes de hacer uso del compilador, asegurate de instalar las librerias de:
 - "tabulate" ``` pip install tabulate```
 - "pandas" ``` pip install pandas```
+
 Para ejecutar el compilador, ejecuta el comando: 
 
 - ``` py quetzal_compiler.py [OPTIONS]``` en **Windows**
