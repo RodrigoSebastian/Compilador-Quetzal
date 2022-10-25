@@ -28,36 +28,36 @@ Para ejecutar el compilador, ejecuta el comando:
 - ``` py quetzal_compiler.py [OPTIONS]``` en **Windows**
 - ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
-## Comandos:
+### Comandos:
 Uso: quetzal_compiler.py [OPTIONS]
 
 Options:
 
-  -f, --file PATH  La ruta al archivo a compilar [requerido si el modo de **test** no esta activado]
+  * ```-f, --file``` PATH  La ruta al archivo a compilar [requerido si el modo de ```test``` no esta activado]
 
-  -t, --test PATH  Ejecuta el compilador con todos los archivos de prueba en esta carpeta [requerido si el modo **file** no esta activado]
+  * ```-t, --test PATH```  Ejecuta el compilador con todos los archivos de prueba en esta carpeta [requerido si el modo ```file``` no esta activado]
 
-  -d, --debug      Activa el modo debug para mostrar informacion detallada del proceso
+  * ```-d, --debug```      Activa el modo debug para mostrar informacion detallada del proceso
 
-  -v, --version    Muestra la version actual del compilador
+  * ```-v, --version```    Muestra la version actual del compilador
 
-  --help           Muestra los comandos disponibles
+  * ```--help```           Muestra los comandos disponibles
 
 ## Procedimiento
 
 Pasos que sigue el proyecto para compilar un programa en Quetzal:
-1. Analizar el programa en Quetzal y generar una tabla de sintaxis. Para eso se realizan los siguientes pasos mediante el código lexical_reader.py (El orden es importante):
-    1. Leer el archivo de entrada y separarlo en filas y se mandan a la función de separación de tokens.
-    2. Se verifica que la linea ingresada no sea una linea vacia. Si lo es, se ignora.
-    3. Se verifica, en el siguiente orden, si la linea es un token de tipo y se sustituye por una variable temporal: 
+1. Analizar el programa en Quetzal y generar una tabla de sintaxis. Para eso se realizan los siguientes pasos mediante el código **lexical_reader.py** (El orden es importante):
+    1. Leer el archivo de entrada y separarlo en filas y se mandan a la función de separación de tokens
+    2. Se verifica que la linea ingresada no sea una linea vacia. Si lo es, se ignora
+    3. Se verifica, en el siguiente orden, si la linea es un token de tipo y se sustituye por una variable temporal:
         * Escaped Character
         * Unicode Character
         * Character
         * String
         * Double operator
-    4. Se buscan comentarios en la linea y se eliminan.
-    5. Se separa la linea analizada por espacios en blanco y se guardan en una lista.
-    6. Se separa la lista anterior por caracteres especiales y se guarda en una lista.
+    4. Se buscan comentarios en la linea y se eliminan
+    5. Se separa la linea analizada por espacios en blanco y se guardan en una lista
+    6. Se separa la lista anterior por caracteres especiales y se guarda en una lista
     7. Se recorre la lista anterior y se verifica uno por uno el tipo de token que es. Creando una lista de tokens con su respectivo tipo y valor
 
 ## Licencia
