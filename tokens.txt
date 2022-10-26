@@ -1,0 +1,16 @@
+{
+    'Identifiers' : '(^[A-Za-z][A-Za-z0-9_]*)'
+    ,'Keywords' : '['and','false','or','break','if','return','dec','inc','true','elif','loop','var','else','not']' 
+    ,'LiteralBooleans' : '(true|false|0|1)' 
+    ,'LiteralIntegers' : '(-?[\d]+)'
+    ,'LiteralCharacter' : '\'(.*?)\''
+    ,'LiteralString' : '\"(.*?)\"'
+    ,'Operators' : '['-','+','*','/','%','not','and','or','=','==','!=','>','<','>=','<=','^f\((.*?)\)$']
+    ,LITERAL_CHAR_NEWLINE = re.compile(r'\n')
+    ,LITERAL_CHAR_CARRIAGE_RETURN = re.compile(r'\r')
+    ,LITERAL_CHAR_CARRIAGE_TAB = re.compile(r'\t')
+    ,LITERAL_CHAR_CARRIAGE_BACKLASH = re.compile(r'\\')
+    ,LITERAL_CHAR_SINGLE_QUOTE = re.compile(r"\\'")
+    ,LITERAL_CHAR_DOUBLE_QUOTE = re.compile(r'\\"')
+    ,LITERAL_CHAR_UNICODE_CHARACTER = re.compile(r'\\u[0-9a-fA-F]{6}')
+}

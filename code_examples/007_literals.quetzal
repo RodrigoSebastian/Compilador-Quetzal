@@ -1,0 +1,46 @@
+/* File: 007_literals.quetzal
+   Verifies that the implementation of literal values meet the specified
+   requirements.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+var fails;
+
+assert(value1, value2, message) {
+    if (value1 != value2) {
+        inc fails;
+        prints("Assertion failure: ");
+        prints(message);
+        println();
+    }
+}
+
+main() {
+    var s, a, i, n;
+    fails = 0;
+    assert('\n', 10, "error in newline literal");
+    assert('\r', 13, "error in carriage return literal");
+    assert('\t', 9, "error in tab literal");
+    assert('\\', 92, "error in backslash literal");
+    assert('\'', 39, "error in single quote literal");
+    assert('\"', 34, "error in double quote literal");
+    assert('\u000041', 'A', "error in letter A literal code point");
+    assert('\u0020AC', 8364, "error in euro literal code point");
+    s = "\u0000A1\u0020ACste ni\u0000F1o \u0020ACst\u0000E1 bien \u0000D1o\u0000F1o!\n";
+    a = [161, 8364, 115, 116, 101, 32, 110, 105, 241, 111, 32, 8364,
+         115, 116, 225, 32, 98, 105, 101, 110, 32, 209, 111, 241, 111,
+         33, 10];
+    i = 0;
+    n = size(s);
+    loop {
+        if (i >= n) {
+            break;
+        }
+        assert(get(a, i), get(s, i), "error in string literal");
+        inc i;
+    }
+    printi(fails);
+    prints(" assertion failure(s) found.");
+    println();
+    prints(a);
+}

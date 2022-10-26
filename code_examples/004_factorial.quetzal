@@ -1,0 +1,52 @@
+/* File: 004_factorial.quetzal
+   Computes factorials using iteration and recursion.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+// Iterative version for computing factorial of n.
+iterative_factorial(n) {
+    var result, i;
+    result = 1;
+    i = 2;
+    loop {
+        if (i > n) {
+            break;
+        }
+        result = result * i;
+        inc i;
+    }
+    return result;
+}
+
+// Recursive version for computing factorial of n.
+recursive_factorial(n) {
+    if (n <= 0) {
+        return 1;
+    } else {
+        return n * recursive_factorial(n - 1);
+    }
+}
+
+main() {
+    var num, option;
+    loop {
+        prints("Input a number: ");
+        num = readi();
+        prints("Iterative factorial: ");
+        printi(iterative_factorial(num));
+        println();
+        prints("Recursive factorial: ");
+        printi(recursive_factorial(num));
+        println();
+        prints("Compute another factorial? ");
+        option = reads();
+        if (size(option) == 0) {
+            option = 'N';
+        } else {
+            option = get(option, 0);
+        }
+        if (option != 'Y' and option != 'y') {
+            break;
+        }
+    }
+}

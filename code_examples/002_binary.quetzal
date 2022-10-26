@@ -1,0 +1,61 @@
+/* File: 002_binary.quetzal
+   Converts decimal numbers into binary.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+*/
+
+// Inverts in-place the contents of an array list.
+reverse(array) {
+    var start, finish, temp;
+    start = 0;
+    finish = size(array) - 1;
+    loop {
+        if (start >= finish) {
+           break;
+        }
+        temp = get(array, start);
+        set(array, start, get(array, finish));
+        set(array, finish, temp);
+        inc start;
+        dec finish;
+    }
+}
+
+// Converts num to a string with its binary representation.
+binary(num) {
+    var result, remainder;
+    if (num <= 0) {
+        return "0";
+    }
+    result = "";
+    loop {
+        if (num <= 0) {
+            break;
+        }
+        remainder = num % 2;
+        add(result, remainder + '0');
+        num = num / 2;
+    }
+    reverse(result);
+    return result;
+}
+
+main() {
+    var option, num;
+    loop {
+        prints("Input a number: ");
+        num = readi();
+        prints("Conversion to binary of that number: ");
+        prints(binary(num));
+        println();
+        prints("Convert another number? ");
+        option = reads();
+        if (size(option) == 0) {
+            option = 'N';
+        } else {
+            option = get(option, 0);
+        }
+        if (option != 'Y' and option != 'y') {
+            break;
+        }
+    }
+}

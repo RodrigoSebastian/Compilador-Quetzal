@@ -1,0 +1,49 @@
+/* File: breaks.quetzal
+   Verifies that the implementation of the break statement meets the
+   specified requirements.
+   (C) 2022 Ariel Ortiz, ITESM CEM.
+ */
+
+sqr(x) {
+    return x * x;
+}
+
+main() {
+    var array, sum, i, j, x;
+    array = [1 + 1, 2 * 3 * 2, 2 * sqr(3) + 2, 20 - (2 + 2 == 4),  5, 4
+        * 2, 2 * 8, 2 + 2 == 5, sqr(5) - 2, 5 * 2 + 1, 1 + sqr(4), -3 +
+        sqr(sqr(2)), 10 + 8, 30 - 6 - 2, 2 * (3 * 2 - 1), sqr(3) * (5 *
+        2 + 1),  8 * 7, sqr(4),  2 + 3 < 2 * 3, -1 + 2 * 2, sqr(2), (3 +
+        4 ) * 2,  -10 + 17,  3 * (2 + 1), 7 + 3 * sqr(2)];
+    sum = 0;
+    i = 0;
+    loop {
+        if (i >= size(array)) {
+            break;
+        }
+        x = get(array, i);
+        inc i;
+        if (x == 99) {
+            break;
+        }
+        if (x <= 2) {
+        } else {
+            j = 1;
+            loop {
+                inc j;
+                if (j > x) {
+                    break;
+                } elif (x == j) {
+                    sum = sum + x;
+                } elif (x % j == 0) {
+                    break;
+                }
+            }
+        }
+    }
+    if (sum == 88) {
+        prints("The program works fine!\n");
+    } else {
+        prints("This program sucks!\n");
+    }
+}
