@@ -4,7 +4,7 @@
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 1.2.1 <!-- omit in toc --> 
+## Version: 1.2.3 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
@@ -20,42 +20,41 @@ El compilador esta implementado en Python 3.10.4
 
 ## Modo de uso
 Antes de hacer uso del compilador, asegurate de instalar las librerias de:
-- "tabulate" ``` pip install tabulate```
-- "pandas" ``` pip install pandas```
+- "tabulate" -> ```pip install tabulate```
+- "pandas" -> ```pip install pandas```
+
 Para ejecutar el compilador, ejecuta el comando: 
 
 - ``` py quetzal_compiler.py [OPTIONS]``` en **Windows**
 - ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
-Para mostrar una version detallada del procedimiento interno del compilador añade el parametro "debug" al comando anterior:
+### OPTIONS:
+  * ```-f, --file PATH```  La ruta al archivo a compilar [requerido si el modo de ```--test``` no esta activado]
 
-- ``` py main.py debug ``` en **Windows**
-- ``` python3 main.py debug ``` en **Mac/GNU Linux**
+  * ```-t, --test PATH```  Ejecuta el compilador con todos los archivos de prueba en esta carpeta [requerido si el modo ```--file``` no esta activado]
 
-Comandos:
-Usage: quetzal_compiler.py [OPTIONS]
+  * ```-d, --debug```      Activa el modo debug para mostrar informacion detallada del proceso
 
-Options:
-  -f, --file PATH  The path to the file to be compiled [required if test mode is not enabled]
-  -t, --test PATH  Run the compiler with all the test files in this folder [required if file mode is not enabled]
-  -d, --debug      Enable debug mode to show detailed information about the process
-  -v, --version    Show the current version of the compiler
-  --help           Show this message and exit.
+  * ```-v, --version```    Muestra la version actual del compilador
+
+  * ```--help```           Muestra los comandos disponibles
 
 ## Procedimiento
 
 Pasos que sigue el proyecto para compilar un programa en Quetzal:
-1. Analizar el programa en Quetzal y generar una tabla de sintaxis.
-    Para eso se realizan los siguientes pasos mediante el código lexical_reader.py (El orden es importante):
-    1.1.- Si la linea contiene un TP_STRING         lo remplaza por una palabra reservada con un espacio en blanco al inicio y al final 
-    1.2.-            "            TP_CHAR                                                          "
-    1.3.- Si la linea es un comentario, lo ignora y regresa una lista vacia para continuar con la siguiente linea
-    1.4.- Se verifican todos los OPERADORES DOBLES y se remplazan por una palabra reservada con un espacio en blanco al inicio y al final
-        NOTA: Todos los tokens cuentan con un espacio al inicio y al final para poder separarse correctamente en procesos posteriores
-    1.7.- Separamos la linea en tokens, aprovechando los espacios en blanco que se agregaron en los pasos anteriores y obtenemos una lista de tokens
-    1.8.- Se recorre la lista de tokens y se verifica si tienen un caracter especial, si es asi se separa en dos tokens diferentes
-    1.9.- Se recorre nuevamente la lista de tokens y se detecta el tipo de token al que pertenece cada uno
-    1.10.- Se regresa la lista de tokens_type que genera la tabla de sintaxis que contiene la informacion de cada token y su tipo -> {token, token_type}
+1. Analizar el programa en Quetzal y generar una tabla de sintaxis. Para eso se realizan los siguientes pasos mediante el código **lexical_reader.py** (El orden es importante):
+    1. Leer el archivo de entrada y separarlo en filas y se mandan a la función de separación de tokens
+    2. Se verifica que la linea ingresada no sea una linea vacia. Si lo es, se ignora
+    3. Se verifica, en el siguiente orden, si la linea es un token de tipo y se sustituye por una variable temporal:
+        * Escaped Character
+        * Unicode Character
+        * Character
+        * String
+        * Double operator
+    4. Se buscan comentarios en la linea y se eliminan
+    5. Se separa la linea analizada por espacios en blanco y se guardan en una lista
+    6. Se separa la lista anterior por caracteres especiales y se guarda en una lista
+    7. Se recorre la lista anterior y se verifica uno por uno el tipo de token que es. Creando una lista de tokens con su respectivo tipo y valor
 
 ## Licencia
 ``` 

@@ -1,8 +1,8 @@
 import os
 import click
-from lexical_reader import Get_tokens_list_from_file
+from src.lexical.lexical_reader import Get_tokens_list_from_file
 
-CURRENT_VERSION = '1.2.1'
+CURRENT_VERSION = '1.2.3'
 
 @click.command()
 @click.option('--file', '-f', help='The path to the file to be compiled [required if test mode is not enabled]', type=click.Path(exists=True))
