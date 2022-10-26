@@ -5,7 +5,7 @@ import re
 import sys
 import src.error_manage as err
 
-clogger = CustomLogger(file_name='lexical_reader.log')
+clogger = CustomLogger(file_name='lexical_reader.log',name='lexical_reader')
 
 GL_LISTS = {}
 GL_COMPILERS = {}

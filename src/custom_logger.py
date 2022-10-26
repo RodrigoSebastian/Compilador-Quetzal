@@ -1,3 +1,4 @@
+from asyncio.log import logger
 import logging
 import os
 from src.logger_config import LoggerConfig
@@ -9,14 +10,14 @@ class CustomLogger(object):
 
   file_format = logging.Formatter('%(asctime)s:%(levelname)s: \n\t%(message)s')
 
-  def __init__(self,file_name='my_app.log'):
+  def __init__(self,file_name='my_app.log', name='quetzal'):
     super().__init__()
     
     #! Crea la carpeta log_info si no existe
     os.mkdir('log_info') if not os.path.exists('log_info') else None
 
     #! Configura el logger para manejar errores y advertencias
-    self.logger = logging.getLogger(__name__)
+    self.logger = logging.getLogger(name)
     self.logger.setLevel(logging.DEBUG)
 
     self.file_handler = logging.FileHandler(os.path.join('log_info',file_name))

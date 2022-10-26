@@ -1,7 +1,7 @@
 import pandas as pd
 from src.custom_logger import CustomLogger
 
-logger = CustomLogger()
+clogger = CustomLogger(file_name='parser.log', name='parser')
 
 data = pd.read_csv('./src/parser/config/test.csv')
 grammar = open('./src/parser/config/grammar_test.txt', 'r')
@@ -16,5 +16,3 @@ tokens_estados = {}
 token_types = data.columns
 for token_type in token_types:
   tokens_estados[token_type] = data[token_type].tolist()
-
-logger.debug("Tokens estados: " + str(tokens_estados))
