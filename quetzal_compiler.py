@@ -1,6 +1,7 @@
 import os
 import click
 from src.lexical.lexical_reader import Get_tokens_list_from_file
+import src.parser.parser
 
 CURRENT_VERSION = '1.2.3'
 
