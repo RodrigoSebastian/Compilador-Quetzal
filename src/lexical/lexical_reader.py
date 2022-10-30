@@ -5,7 +5,7 @@ import re
 import sys
 import src.error_manage as err
 
-clogger = CustomLogger(file_name='lexical_reader.log',name='lexical_reader')
+clogger = CustomLogger(name='lexical_reader')
 
 GL_LISTS = {}
 GL_COMPILERS = {}
@@ -15,11 +15,12 @@ def print_tokens(definitions):
   only_for_print = []
   for definition in definitions:
     temp = []
-    temp.append(definition['type'])
+    temp.append(definition['token'])
     temp.append(definition['value'])
+    temp.append(definition['number'])
     only_for_print.append(temp)
   
-  clogger.debug(tabulate(only_for_print, headers=['Tipo', 'Valor']))
+  clogger.without_format().debug(tabulate(only_for_print, headers=['Token', 'Valor', 'Token_INT'], showindex="always", tablefmt="pretty"))
 
 #! Funcion para inicializar las variables globales
 def important_initialization():
@@ -31,10 +32,38 @@ def important_initialization():
 
   clogger.debug("New reserved words list: {0}".format(defs.TEMP_RESERVED_WORDS))
 
-#! FUncion para imprimir una linea de separacion llena de ====
-def print_break_line():
-  clogger.without_format().debug("\n=====================================================================")
-  clogger.without_format().debug("")
+  amount_tokens = len(defs.TOKEN_TYPES_INT)
+  for element in defs.SYMBOLS:
+    defs.TOKEN_TYPES[defs.SYMBOLS[element]] = element
+    defs.TOKEN_TYPES_INT[element] = amount_tokens
+    amount_tokens += 1
+
+  amount_tokens = len(defs.TOKEN_TYPES_INT)
+  for element in defs.RESERVERD_WORDS:
+    defs.TOKEN_TYPES_INT[defs.RESERVERD_WORDS[element]] = amount_tokens
+    amount_tokens += 1
+
+  amount_tokens = len(defs.TOKEN_TYPES_INT)
+  for element in defs.OPERATORS:
+    defs.TOKEN_TYPES_INT[element] = amount_tokens
+    amount_tokens += 1
+
+  amount_tokens = len(defs.TOKEN_TYPES_INT)
+  for element in defs.DB_OPERATORS:
+    defs.TOKEN_TYPES_INT[element] = amount_tokens
+    amount_tokens += 1
+
+  temp = []
+  for token_type_int in defs.TOKEN_TYPES:
+    temp.append([token_type_int,defs.TOKEN_TYPES[token_type_int]])
+  clogger.debug("New token types list:\n{0}".format(tabulate(temp, headers=['Token', 'Value'], showindex="always", tablefmt="pretty")))
+
+  temp = []
+  for token_type_int in defs.TOKEN_TYPES_INT:
+    temp.append([token_type_int,defs.TOKEN_TYPES_INT[token_type_int]])
+  clogger.debug("New token types int list:\n{0}".format(tabulate(temp, headers=['Token', 'INT'], showindex="always", tablefmt="pretty")))
+
+  clogger.print_break_line()
 
 #! Función que cambia todas las variables de tipo _type_token y las remplazamos por una palabra reservada: _name
 #! testeo = "perro caliente" -> testeo = TP_STRING
@@ -114,7 +143,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
     if defs.IDENTIFIER.match(token):
       #! Identificamos si el token es una palabra reservada
       if token in defs.RESERVERD_WORDS:
-        tokens_types.append({'type': defs.RESERVERD_WORDS[token], 'value': token})
+        tokens_types.append({'token': defs.RESERVERD_WORDS[token], 'value': token, 'number': defs.TOKEN_TYPES_INT[token]})
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
@@ -129,19 +158,19 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
               value.append(string)
           GL_LISTS[token][0] = ' '.join(value)
 
-        tokens_types.append({'type': defs.TEMP_RESERVED_WORDS[token], 'value': GL_LISTS[token][0]})
+        tokens_types.append({'token': defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]], 'value': GL_LISTS[token][0], 'number': defs.TOKEN_TYPES_INT[defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]]})
         GL_LISTS[token].pop(0)
       else:
-        tokens_types.append({'type': 'TP_IDENTIFIER', 'value': token})
+        tokens_types.append({'token': defs.TOKEN_TYPES['TP_INDENTIFIER'], 'value': token, 'number': defs.TOKEN_TYPES_INT['ID']})
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
-      tokens_types.append({'type': 'TP_INTEGER', 'value': token})
+      tokens_types.append({'token': defs.TOKEN_TYPES['TP_INTEGER'], 'value': token, 'number': defs.TOKEN_TYPES_INT['LIIN']})
     #! Identificamos si el token es un operador
     elif token in defs.OPERATORS:
-      tokens_types.append({'type': defs.OPERATORS[token], 'value': token})
+      tokens_types.append({'token': defs.OPERATORS[token], 'value': token, 'number': defs.TOKEN_TYPES_INT[token], 'number': defs.TOKEN_TYPES_INT[token]})
     #! Identificamos si el token es un simbolo
     elif token in defs.SYMBOLS:
-      tokens_types.append({'type': defs.SYMBOLS[token], 'value': token})
+      tokens_types.append({'token': defs.TOKEN_TYPES[defs.SYMBOLS[token]], 'value': token, 'number': defs.TOKEN_TYPES_INT[token]})
     else:
       error_position = original_line.find(token) + 1
       token = token.strip('\n')
@@ -152,7 +181,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
 
   clogger.debug("Resulting tokens: " + str(tokens_types))
 
-  print_break_line()
+  clogger.print_break_line()
   return tokens_types, is_comment_block, False
 
 def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
@@ -169,7 +198,7 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
 
     clogger.one_line().info("Reading file: " + file_name)
     file_lines = file.readlines()
-    print_break_line()
+    clogger.print_break_line()
     important_initialization()
 
     tokens = []
@@ -190,16 +219,12 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       definitions = [item for sublist in tokens for item in sublist]
 
       print_tokens(definitions)
-      print_break_line()
-
-      clogger.one_line().info("The code has been compiled successfully")
+      clogger.print_break_line()
 
     if test_mode:
       clogger.without_format().info("")
       clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
       clogger.without_format().info("")
-    
-    clogger.without_format().info("")
     return definitions
 
   else:

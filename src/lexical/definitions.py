@@ -1,9 +1,9 @@
 import re
 
 RESERVERD_WORDS = {
-  "and"   : "RW_AND"   , "false": "RW_FALSE", "or"  : "RW_OR"  , "break": "RW_BREAK", "if"  : "RW_IF"  ,
-  "return": "RW_RETURN", "dec"  : "RW_DEC"  , "inc" : "RW_INC" , "true" : "RW_TRUE" , "elif": "RW_ELIF",
-  "loop"  : "RW_LOOP"  , "var"  : "RW_VAR"  , "else": "RW_ELSE", "not"  : "RW_NOT"
+  "and"   : "and"   , "false": "LIBO", "or"  : "or"  , "break": "break", "if"  : "if"  ,
+  "return": "return", "dec"  : "dec" , "inc" : "inc" , "true" : "LIBO" , "elif": "elif",
+  "loop"  : "loop"  , "var"  : "var" , "else": "else", "not"  : "not"
 }
 
 OPERATORS = {
@@ -16,11 +16,31 @@ DB_OPERATORS = {
 }
 
 SYMBOLS = {
-  '\n': 'SB_BREAK_LINE'   , ';' : 'SB_SEMI_COLON'      , ',': 'SB_COMMA'            , '.': 'SB_DOT'          ,
-  ':' : 'SB_COLON'        , '(' : 'SB_LEFT_PARENTHESIS', ')': 'SB_RIGHT_PARENTHESIS', '[': 'SB_LEFT_BRACKET' ,
-  ']' : 'SB_RIGHT_BRACKET', '{' : 'SB_LEFT_BRACE'      , '}': 'SB_RIGHT_BRACE'      , '|': 'SB_PIPE'         ,
-  '!' : 'SB_EXCLAMATION'  , '#' : 'SB_HASH'            , '@': 'SB_AT'               , '$': 'SB_DOLLAR'       ,
-  '\t': 'SB_TAB'
+  '\n': 'SB_BREAK_LINE'   , ';' : 'SB_SEMI_COLON'      , ',': 'SB_COMMA'            , '.' : 'SB_DOT'          ,
+  ':' : 'SB_COLON'        , '(' : 'SB_LEFT_PARENTHESIS', ')': 'SB_RIGHT_PARENTHESIS', '[' : 'SB_LEFT_BRACKET' ,
+  ']' : 'SB_RIGHT_BRACKET', '{' : 'SB_LEFT_BRACE'      , '}': 'SB_RIGHT_BRACE'      , '|' : 'SB_PIPE'         ,
+  '!' : 'SB_EXCLAMATION'  , '#' : 'SB_HASH'            , '@': 'SB_AT'               , '\t': 'SB_TAB'          ,
+  '?' : 'SB_QUESTION_MARK'
+}
+
+TOKEN_TYPES = {
+  'TP_INDENTIFIER': 'ID',
+  'TP_INTEGER'    : 'LIIN',
+  'TP_STRING'     : 'LISTR',
+  'TP_CHAR'       : 'LICH',
+  'TP_ES_CHAR'    : 'LICH',
+  'TP_UC_CHAR'    : 'LICH'
+}
+
+TOKEN_TYPES_INT = {
+  'Q'       : -1,
+  'EOF'     :  0,
+  'PROGRAMP':  1,
+  'PROGRAM' :  2,
+  'ID'      :  3,
+  'LIIN'    :  4,
+  'LISTR'   :  5,
+  'LICH'    :  6
 }
 
 TEMP_RESERVED_WORDS = {

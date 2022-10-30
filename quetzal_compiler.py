@@ -1,9 +1,13 @@
 import os
 import click
 from src.lexical.lexical_reader import Get_tokens_list_from_file
-import src.parser.parser
+import src.parser.parser as ps
+from src.custom_logger import CustomLogger
 
 CURRENT_VERSION = '1.2.3'
+clogger = CustomLogger(name='main')
+
+os.system("clear")
 
 @click.command()
 @click.option('--file', '-f', help='The path to the file to be compiled [required if test mode is not enabled]', type=click.Path(exists=True))
@@ -15,7 +19,8 @@ def veg(file, debug, test,version):
   if version:
     click.echo("Quetzal compiler version {0}".format(CURRENT_VERSION))
   elif file:
-    Get_tokens_list_from_file(file,debug_mode)
+    definitions = Get_tokens_list_from_file(file,debug_mode)
+    ps.analyze_input(definitions)
   elif test:
     if os.path.isdir(test):
       if test[-1] != "/":
@@ -37,6 +42,9 @@ def veg(file, debug, test,version):
   else:
     click.echo('Please provide a file to read with a --file or --test option')
     click.echo('Use --help for more information')
+
+  clogger.one_line().info("The code has been compiled successfully")
+  clogger.without_format().info("")
 
 if __name__ == "__main__":
   veg()

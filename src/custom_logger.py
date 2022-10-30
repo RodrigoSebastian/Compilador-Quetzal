@@ -1,6 +1,4 @@
-from asyncio.log import logger
 import logging
-import os
 from src.logger_config import LoggerConfig
 
 class CustomLogger(object):
@@ -12,15 +10,12 @@ class CustomLogger(object):
 
   def __init__(self,file_name='my_app.log', name='quetzal'):
     super().__init__()
-    
-    #! Crea la carpeta log_info si no existe
-    os.mkdir('log_info') if not os.path.exists('log_info') else None
 
     #! Configura el logger para manejar errores y advertencias
     self.logger = logging.getLogger(name)
-    self.logger.setLevel(logging.DEBUG)
+    self.logger.setLevel(logging.INFO)
 
-    self.file_handler = logging.FileHandler(os.path.join('log_info',file_name))
+    self.file_handler = logging.FileHandler(file_name)
     self.file_handler.setLevel(logging.INFO)
     self.file_handler.setFormatter(self.file_format)
 
@@ -89,3 +84,9 @@ class CustomLogger(object):
     self.logger.critical(msg)
     self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))
     self.file_handler.setFormatter(self.file_format)
+
+  #! FUncion para imprimir una linea de separacion llena de ====
+  def print_break_line(self):
+    self.without_format()
+    self.logger.debug("\n=====================================================================")
+    self.logger.debug("")
