@@ -4,7 +4,7 @@ from src.lexical.lexical_reader import Get_tokens_list_from_file
 import src.parser.parser as ps
 from src.custom_logger import CustomLogger
 
-CURRENT_VERSION = '1.2.3'
+CURRENT_VERSION = '2.0.0'
 clogger = CustomLogger(name='main')
 
 os.system("clear")
