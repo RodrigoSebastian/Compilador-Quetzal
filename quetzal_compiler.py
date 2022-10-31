@@ -21,6 +21,9 @@ def veg(file, debug, test,version):
   elif file:
     definitions = Get_tokens_list_from_file(file,debug_mode)
     ps.analyze_input(definitions)
+    if definitions != []:
+      clogger.one_line().info("The code has been compiled successfully")
+    clogger.without_format().info("")
   elif test:
     if os.path.isdir(test):
       if test[-1] != "/":
@@ -34,17 +37,26 @@ def veg(file, debug, test,version):
           temp_files = os.listdir(path)
           for temp_file in temp_files:
             temp_path = path + "/" + temp_file
-            Get_tokens_list_from_file(temp_path,debug_mode,test_mode=test)
+            definitions = Get_tokens_list_from_file(temp_path,debug_mode,test_mode=test)
+            ps.analyze_input(definitions)
+            if definitions != []:
+              clogger.one_line().info("The code has been compiled successfully")
+            clogger.without_format().info("")
+            clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            clogger.without_format().info("")
         else:
-          Get_tokens_list_from_file(path,debug_mode,test_mode=test)  
+          definitions = Get_tokens_list_from_file(path,debug_mode,test_mode=test)  
+          ps.analyze_input(definitions)
+          if definitions != []:
+              clogger.one_line().info("The code has been compiled successfully")
+          clogger.without_format().info("")
+          clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+          clogger.without_format().info("")
     else:
       click.echo("The path is not a directory")
   else:
     click.echo('Please provide a file to read with a --file or --test option')
     click.echo('Use --help for more information')
-
-  clogger.one_line().info("The code has been compiled successfully")
-  clogger.without_format().info("")
 
 if __name__ == "__main__":
   veg()

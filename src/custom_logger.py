@@ -8,15 +8,15 @@ class CustomLogger(object):
 
   file_format = logging.Formatter('%(asctime)s:%(levelname)s: \n\t%(message)s')
 
-  def __init__(self,file_name='my_app.log', name='quetzal'):
+  def __init__(self,file_name='console_view.log', name='quetzal'):
     super().__init__()
 
     #! Configura el logger para manejar errores y advertencias
     self.logger = logging.getLogger(name)
     self.logger.setLevel(logging.INFO)
 
-    self.file_handler = logging.FileHandler(file_name)
-    self.file_handler.setLevel(logging.INFO)
+    self.file_handler = logging.FileHandler(file_name,mode='w')
+    self.file_handler.setLevel(logging.DEBUG)
     self.file_handler.setFormatter(self.file_format)
 
     self.stream_handler = logging.StreamHandler()
@@ -43,22 +43,16 @@ class CustomLogger(object):
   def setLevel(self, level = 'DEBUG'):
     if level == 'DEBUG':
       self.logger.setLevel(logging.DEBUG)
-      self.file_handler.setLevel(logging.DEBUG)
     elif level == 'INFO':
       self.logger.setLevel(logging.INFO)
-      self.file_handler.setLevel(logging.INFO)
     elif level == 'WARNING':
       self.logger.setLevel(logging.WARNING)
-      self.file_handler.setLevel(logging.WARNING)
     elif level == 'ERROR':
       self.logger.setLevel(logging.ERROR)
-      self.file_handler.setLevel(logging.ERROR)
     elif level == 'CRITICAL':
       self.logger.setLevel(logging.CRITICAL)
-      self.file_handler.setLevel(logging.CRITICAL)
     else:
       self.logger.setLevel(logging.NOTSET)
-      self.file_handler.setLevel(logging.INFO)
 
   def debug(self, msg):
     self.logger.debug(msg)
@@ -90,3 +84,4 @@ class CustomLogger(object):
     self.without_format()
     self.logger.debug("\n=====================================================================")
     self.logger.debug("")
+    self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))

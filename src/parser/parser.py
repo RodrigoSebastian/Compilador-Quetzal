@@ -1,3 +1,6 @@
+from lib2to3.pgen2 import token
+from syslog import closelog
+from tabulate import tabulate
 import pandas as pd
 from src.custom_logger import CustomLogger
 import src.lexical.definitions as defs
@@ -24,6 +27,11 @@ def init():
   for token_type in token_types:
     tokens_estados[token_type] = data[token_type].tolist()
 
+  temp = []
+  for token_type_int in defs.TOKEN_TYPES_INT:
+    temp.append([token_type_int,defs.TOKEN_TYPES_INT[token_type_int]])
+  clogger.debug("New token types int list:\n{0}".format(tabulate(temp, headers=['Token', 'INT'], showindex="always", tablefmt="pretty")))
+
 def analyze_input(_input):
   init()
   input = []
@@ -33,9 +41,10 @@ def analyze_input(_input):
 
   input.append('EOF')
 
-  print("Stack: {0}".format(stack))
-  print("Input: {0}".format(input))
-  print("")
+  log_temp = ""
+  log_temp += "Stack: {0}\n".format(stack)
+  log_temp += "\tInput: {0}".format(input)
+  clogger.debug(log_temp)
 
   current_rule = 0
   while current_rule != 'acc':
@@ -43,8 +52,9 @@ def analyze_input(_input):
     current_state = stack[-1]
     current_input = input[0]
     current_rule = tokens_estados[current_input][current_state]
-    print("Current state: {0}".format(current_state))
-    print("Current rule: {0}".format(tokens_estados[current_input][current_state]))
+    log_temp = ""
+    log_temp += "Current state: {0}\n".format(current_state)
+    log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
     if current_rule[0] == 's':
       stack.append(current_input)
       stack.append(int(current_rule[1:]))
@@ -65,8 +75,9 @@ def analyze_input(_input):
 
       stack.append(int(new_stack_top))
 
-    print("Input: " + str(input))
-    print("Stack: " + str(stack))
-    print("")
+    log_temp += "\tInput: {0}\n".format(input)
+    log_temp += "\tStack: {0}\n".format(stack)
+    clogger.debug(log_temp)
+    clogger.print_break_line()
 
-  print("Cadena aceptada")
+  clogger.one_line().info("Parser: File is syntactically correct")

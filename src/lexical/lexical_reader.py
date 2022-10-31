@@ -45,11 +45,13 @@ def important_initialization():
 
   amount_tokens = len(defs.TOKEN_TYPES_INT)
   for element in defs.OPERATORS:
+    defs.TOKEN_TYPES[defs.OPERATORS[element]] = element
     defs.TOKEN_TYPES_INT[element] = amount_tokens
     amount_tokens += 1
 
   amount_tokens = len(defs.TOKEN_TYPES_INT)
   for element in defs.DB_OPERATORS:
+    defs.TOKEN_TYPES[defs.DB_OPERATORS[element]] = element
     defs.TOKEN_TYPES_INT[element] = amount_tokens
     amount_tokens += 1
 
@@ -167,7 +169,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
       tokens_types.append({'token': defs.TOKEN_TYPES['TP_INTEGER'], 'value': token, 'number': defs.TOKEN_TYPES_INT['LIIN']})
     #! Identificamos si el token es un operador
     elif token in defs.OPERATORS:
-      tokens_types.append({'token': defs.OPERATORS[token], 'value': token, 'number': defs.TOKEN_TYPES_INT[token], 'number': defs.TOKEN_TYPES_INT[token]})
+      tokens_types.append({'token': defs.TOKEN_TYPES[defs.OPERATORS[token]], 'value': token, 'number': defs.TOKEN_TYPES_INT[token], 'number': defs.TOKEN_TYPES_INT[token]})
     #! Identificamos si el token es un simbolo
     elif token in defs.SYMBOLS:
       tokens_types.append({'token': defs.TOKEN_TYPES[defs.SYMBOLS[token]], 'value': token, 'number': defs.TOKEN_TYPES_INT[token]})
@@ -220,11 +222,8 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
 
       print_tokens(definitions)
       clogger.print_break_line()
-
-    if test_mode:
-      clogger.without_format().info("")
-      clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-      clogger.without_format().info("")
+      
+    clogger.one_line().info('Lexical: File is splitted in tokens')
     return definitions
 
   else:

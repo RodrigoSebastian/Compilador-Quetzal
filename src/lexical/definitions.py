@@ -1,9 +1,9 @@
 import re
 
 RESERVERD_WORDS = {
-  "and"   : "and"   , "false": "LIBO", "or"  : "or"  , "break": "break", "if"  : "if"  ,
-  "return": "return", "dec"  : "dec" , "inc" : "inc" , "true" : "LIBO" , "elif": "elif",
-  "loop"  : "loop"  , "var"  : "var" , "else": "else", "not"  : "not"
+  "and"   : "and"   , "or"  : "or"  , "break": "break", "if"   : "if"  ,
+  "return": "return", "dec" : "dec" , "inc"  : "inc"  , "elif" : "elif",
+  "loop"  : "loop"  , "var" : "var" , "else" : "else" , "not"  : "not"
 }
 
 OPERATORS = {
@@ -29,18 +29,21 @@ TOKEN_TYPES = {
   'TP_STRING'     : 'LISTR',
   'TP_CHAR'       : 'LICH',
   'TP_ES_CHAR'    : 'LICH',
-  'TP_UC_CHAR'    : 'LICH'
+  'TP_UC_CHAR'    : 'LICH',
+  'false'         : 'LIBO',
+  'true'          : 'LIBO',
 }
 
 TOKEN_TYPES_INT = {
-  'Q'       : -1,
-  'EOF'     :  0,
+  'Q'       : -5,
+  'EOF'     : -1,
   'PROGRAMP':  1,
   'PROGRAM' :  2,
   'ID'      :  3,
   'LIIN'    :  4,
   'LISTR'   :  5,
-  'LICH'    :  6
+  'LICH'    :  6,
+  'LIBO'    :  7
 }
 
 TEMP_RESERVED_WORDS = {
