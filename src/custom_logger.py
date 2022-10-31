@@ -1,5 +1,4 @@
 import logging
-import os
 from src.logger_config import LoggerConfig
 
 class CustomLogger(object):
@@ -9,18 +8,15 @@ class CustomLogger(object):
 
   file_format = logging.Formatter('%(asctime)s:%(levelname)s: \n\t%(message)s')
 
-  def __init__(self,file_name='my_app.log'):
+  def __init__(self,file_name='console_view.log', name='quetzal'):
     super().__init__()
-    
-    #! Crea la carpeta log_info si no existe
-    os.mkdir('log_info') if not os.path.exists('log_info') else None
 
     #! Configura el logger para manejar errores y advertencias
-    self.logger = logging.getLogger(__name__)
-    self.logger.setLevel(logging.DEBUG)
+    self.logger = logging.getLogger(name)
+    self.logger.setLevel(logging.INFO)
 
-    self.file_handler = logging.FileHandler(os.path.join('log_info',file_name))
-    self.file_handler.setLevel(logging.INFO)
+    self.file_handler = logging.FileHandler(file_name,mode='w')
+    self.file_handler.setLevel(logging.DEBUG)
     self.file_handler.setFormatter(self.file_format)
 
     self.stream_handler = logging.StreamHandler()
@@ -47,22 +43,16 @@ class CustomLogger(object):
   def setLevel(self, level = 'DEBUG'):
     if level == 'DEBUG':
       self.logger.setLevel(logging.DEBUG)
-      self.file_handler.setLevel(logging.DEBUG)
     elif level == 'INFO':
       self.logger.setLevel(logging.INFO)
-      self.file_handler.setLevel(logging.INFO)
     elif level == 'WARNING':
       self.logger.setLevel(logging.WARNING)
-      self.file_handler.setLevel(logging.WARNING)
     elif level == 'ERROR':
       self.logger.setLevel(logging.ERROR)
-      self.file_handler.setLevel(logging.ERROR)
     elif level == 'CRITICAL':
       self.logger.setLevel(logging.CRITICAL)
-      self.file_handler.setLevel(logging.CRITICAL)
     else:
       self.logger.setLevel(logging.NOTSET)
-      self.file_handler.setLevel(logging.INFO)
 
   def debug(self, msg):
     self.logger.debug(msg)
@@ -88,3 +78,10 @@ class CustomLogger(object):
     self.logger.critical(msg)
     self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))
     self.file_handler.setFormatter(self.file_format)
+
+  #! FUncion para imprimir una linea de separacion llena de ====
+  def print_break_line(self):
+    self.without_format()
+    self.logger.debug("\n=====================================================================")
+    self.logger.debug("")
+    self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))
