@@ -20,8 +20,8 @@ def veg(file, debug, test,version):
     click.echo("Quetzal compiler version {0}".format(CURRENT_VERSION))
   elif file:
     definitions = Get_tokens_list_from_file(file,debug_mode)
-    ps.analyze_input(definitions)
     if definitions != []:
+      ps.analyze_input(definitions)
       clogger.one_line().info("The code has been compiled successfully")
     clogger.without_format().info("")
   elif test:
@@ -38,20 +38,18 @@ def veg(file, debug, test,version):
           for temp_file in temp_files:
             temp_path = path + "/" + temp_file
             definitions = Get_tokens_list_from_file(temp_path,debug_mode,test_mode=test)
-            ps.analyze_input(definitions)
             if definitions != []:
+              ps.analyze_input(definitions)
               clogger.one_line().info("The code has been compiled successfully")
-            clogger.without_format().info("")
+              clogger.without_format().info("")
             clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-            clogger.without_format().info("")
         else:
           definitions = Get_tokens_list_from_file(path,debug_mode,test_mode=test)  
-          ps.analyze_input(definitions)
           if definitions != []:
-              clogger.one_line().info("The code has been compiled successfully")
-          clogger.without_format().info("")
+            ps.analyze_input(definitions)
+            clogger.one_line().info("The code has been compiled successfully")
+            clogger.without_format().info("")
           clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-          clogger.without_format().info("")
     else:
       click.echo("The path is not a directory")
   else:

@@ -223,7 +223,7 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       print_tokens(definitions)
       clogger.print_break_line()
       
-    clogger.one_line().info('Lexical: File is splitted in tokens')
+      clogger.one_line().info('Lexical: File is splitted in tokens')
     return definitions
 
   else:
