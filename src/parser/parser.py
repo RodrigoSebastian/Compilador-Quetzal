@@ -50,7 +50,6 @@ def analyze_input(_input):
   current_rule = 0
   error = False
   index = -1
-  last_rule = 0
   while current_rule != 'acc' and error == False:
     current_state = stack[-1]
     current_input = input[0]
@@ -60,11 +59,6 @@ def analyze_input(_input):
     log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
     
     if current_rule == '-':
-
-      print(last_rule)
-      print(estados[int(last_rule[1:])][1].split(' '))
-      print(current_rule)
-
       msg = emanager.get_syntax_error_message(_input[index]['token'])
       clogger.error(msg,'SYNTAX ERROR')
       return False
@@ -74,7 +68,6 @@ def analyze_input(_input):
         stack.append(int(current_rule[1:]))
         input.pop(0)
       elif current_rule[0] == 'r':
-        last_rule = current_rule
         reduc = estados[int(current_rule[1:])][1].split(' ')
         reduc.reverse()
         for reduc_item in reduc:

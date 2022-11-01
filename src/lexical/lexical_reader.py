@@ -164,8 +164,8 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
               value.append(string)
           GL_LISTS[token][0] = ' '.join(value)
 
-        dict_token = defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]], 
-        dict_value = GL_LISTS[token][0], 
+        dict_token = defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]
+        dict_value = GL_LISTS[token][0]
         dict_number = defs.TOKEN_TYPES_INT[defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]]
         GL_LISTS[token].pop(0)
       else:
@@ -184,7 +184,9 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
       dict_number = defs.TOKEN_TYPES_INT[token]
     else:
-      msg = error_manager.get_lexical_error_info(token,_line_number)
+      print("Token no identificado: " + token)
+      print('Linea: ' + str(_line_number))
+      msg = error_manager.get_lexical_error_message(token,_line_number)
       clogger.error(msg,'LEXICAL ERROR')
       clogger.without_format().info("")
       return [], False, True
