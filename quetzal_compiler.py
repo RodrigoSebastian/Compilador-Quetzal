@@ -21,8 +21,9 @@ def veg(file, debug, test,version):
   elif file:
     definitions = Get_tokens_list_from_file(file,debug_mode)
     if definitions != []:
-      ps.analyze_input(definitions)
-      clogger.one_line().info("The code has been compiled successfully")
+      definitions = ps.analyze_input(definitions)
+      if definitions:
+        clogger.one_line().info("The code has been compiled successfully")
     clogger.without_format().info("")
   elif test:
     if os.path.isdir(test):
@@ -39,16 +40,18 @@ def veg(file, debug, test,version):
             temp_path = path + "/" + temp_file
             definitions = Get_tokens_list_from_file(temp_path,debug_mode,test_mode=test)
             if definitions != []:
-              ps.analyze_input(definitions)
-              clogger.one_line().info("The code has been compiled successfully")
-              clogger.without_format().info("")
+              definitions = ps.analyze_input(definitions)
+              if definitions:
+                clogger.one_line().info("The code has been compiled successfully")
+                clogger.without_format().info("")
             clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
         else:
-          definitions = Get_tokens_list_from_file(path,debug_mode,test_mode=test)  
-          if definitions != []:
-            ps.analyze_input(definitions)
-            clogger.one_line().info("The code has been compiled successfully")
-            clogger.without_format().info("")
+          definitions = Get_tokens_list_from_file(path,debug_mode,test_mode=test)
+          if definitions != []:  
+            definitions = ps.analyze_input(definitions)
+            if definitions:
+              clogger.one_line().info("The code has been compiled successfully")
+              clogger.without_format().info("")
           clogger.without_format().info("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     else:
       click.echo("The path is not a directory")

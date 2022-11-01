@@ -177,7 +177,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
       error_position = original_line.find(token) + 1
       token = token.strip('\n')
       msg = "In line {0}, position {1} → Token {2} is not valid{3}".format(line_number, error_position, token, err.get_error_info(token))
-      clogger.error(msg)
+      clogger.error(msg,'LEXICAL ERROR')
       clogger.without_format().info("")
       return [], False, True
 

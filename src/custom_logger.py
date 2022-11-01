@@ -69,7 +69,8 @@ class CustomLogger(object):
     self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))
     self.file_handler.setFormatter(self.file_format)
 
-  def error(self, msg):
+  def error(self, msg, error_type = 'ERROR'):
+    self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:{0}: '.format(error_type),'\n\t%(message)s'))
     self.logger.error(msg)
     self.stream_handler.setFormatter(LoggerConfig('%(asctime)s:%(levelname)s: ','\n\t%(message)s'))
     self.file_handler.setFormatter(self.file_format)
