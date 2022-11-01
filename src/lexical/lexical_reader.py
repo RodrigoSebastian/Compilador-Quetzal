@@ -1,11 +1,13 @@
 from src.custom_logger import CustomLogger
+from src.error_manager import ErrorManager
+
 import src.lexical.definitions as defs
 from tabulate import tabulate
 import re
 import sys
-import src.error_manage as err
 
 clogger = CustomLogger(name='lexical_reader')
+error_manager = ErrorManager()
 
 GL_LISTS = {}
 GL_COMPILERS = {}
@@ -82,8 +84,7 @@ def replace_token_by_tory(_type_token, _line, _name = ""):
   clogger.debug('Changing to {0}:'.format(_name.strip() if _name != "" else "BLANK if is a COMMENT")+' {0}'.format(line)) if token_list else None
   return line
 
-def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
-  original_line = line
+def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0):
   is_comment_block = _is_comment_block
 
   if line == '\n':                                     #! Si la linea esta vacia, no hacer nada
@@ -141,11 +142,14 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   clogger.debug("Line after splitting by punctuation: " + str(temp_tokens))
 
   for token in temp_tokens:
+    dict_value = token
+
     #! Identificamos si el token es un ID
     if defs.IDENTIFIER.match(token):
       #! Identificamos si el token es una palabra reservada
       if token in defs.RESERVERD_WORDS:
-        tokens_types.append({'token': defs.RESERVERD_WORDS[token], 'value': token, 'number': defs.TOKEN_TYPES_INT[token]})
+        dict_token = defs.RESERVERD_WORDS[token]
+        dict_number = defs.TOKEN_TYPES_INT[token]
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
@@ -160,26 +164,32 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
               value.append(string)
           GL_LISTS[token][0] = ' '.join(value)
 
-        tokens_types.append({'token': defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]], 'value': GL_LISTS[token][0], 'number': defs.TOKEN_TYPES_INT[defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]]})
+        dict_token = defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]], 
+        dict_value = GL_LISTS[token][0], 
+        dict_number = defs.TOKEN_TYPES_INT[defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]]
         GL_LISTS[token].pop(0)
       else:
-        tokens_types.append({'token': defs.TOKEN_TYPES['TP_INDENTIFIER'], 'value': token, 'number': defs.TOKEN_TYPES_INT['ID']})
+        dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
+        dict_number = defs.TOKEN_TYPES_INT['ID']
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
-      tokens_types.append({'token': defs.TOKEN_TYPES['TP_INTEGER'], 'value': token, 'number': defs.TOKEN_TYPES_INT['LIIN']})
+      dict_token = defs.TOKEN_TYPES['TP_INTEGER']
+      dict_number = defs.TOKEN_TYPES_INT['LIIN']
     #! Identificamos si el token es un operador
     elif token in defs.OPERATORS:
-      tokens_types.append({'token': defs.TOKEN_TYPES[defs.OPERATORS[token]], 'value': token, 'number': defs.TOKEN_TYPES_INT[token], 'number': defs.TOKEN_TYPES_INT[token]})
+      dict_token = defs.TOKEN_TYPES[defs.OPERATORS[token]]
+      dict_number = defs.TOKEN_TYPES_INT[token]
     #! Identificamos si el token es un simbolo
     elif token in defs.SYMBOLS:
-      tokens_types.append({'token': defs.TOKEN_TYPES[defs.SYMBOLS[token]], 'value': token, 'number': defs.TOKEN_TYPES_INT[token]})
+      dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
+      dict_number = defs.TOKEN_TYPES_INT[token]
     else:
-      error_position = original_line.find(token) + 1
-      token = token.strip('\n')
-      msg = "In line {0}, position {1} → Token {2} is not valid{3}".format(line_number, error_position, token, err.get_error_info(token))
-      clogger.error(msg)
+      msg = error_manager.get_lexical_error_info(token,_line_number)
+      clogger.error(msg,'LEXICAL ERROR')
       clogger.without_format().info("")
       return [], False, True
+
+    tokens_types.append({'token': dict_token, 'value': dict_value, 'number': dict_number, 'line': _line_number})
 
   clogger.debug("Resulting tokens: " + str(tokens_types))
 
@@ -187,6 +197,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, line_number = 0):
   return tokens_types, is_comment_block, False
 
 def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
+  global error_manager
   clogger.without_format().info("")
   clogger.one_line().info("Starting Quetzal compiler...")
   if debug_mode:
@@ -200,12 +211,13 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
 
     clogger.one_line().info("Reading file: " + file_name)
     file_lines = file.readlines()
+    error_manager.set_original_file(file_name)
     clogger.print_break_line()
     important_initialization()
 
     tokens = []
     is_comment_block = False
-    line_number = 1
+    line_number = 0
     error = False
     definitions = []
     for line in file_lines:
@@ -223,7 +235,7 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       print_tokens(definitions)
       clogger.print_break_line()
       
-    clogger.one_line().info('Lexical: File is splitted in tokens')
+      clogger.one_line().info('Lexical: File is splitted in tokens')
     return definitions
 
   else:

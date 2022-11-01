@@ -1,11 +1,11 @@
-from lib2to3.pgen2 import token
-from syslog import closelog
 from tabulate import tabulate
 import pandas as pd
 from src.custom_logger import CustomLogger
+from src.error_manager import ErrorManager
 import src.lexical.definitions as defs
 
 clogger = CustomLogger(name='parser')
+emanager = ErrorManager()
 tokens_estados = {}
 estados = []
 
@@ -14,6 +14,7 @@ def init():
   global tokens_estados
 
   data = pd.read_csv('./src/parser/config/LR_TABLE.csv')
+  data = data.fillna('-')
   grammar = open('./src/parser/config/grammar.txt', 'r')
   grammar = grammar.readlines()
   estados = []
@@ -47,37 +48,52 @@ def analyze_input(_input):
   clogger.debug(log_temp)
 
   current_rule = 0
-  while current_rule != 'acc':
-  # for x in range(10):
+  error = False
+  index = -1
+  last_rule = 0
+  while current_rule != 'acc' and error == False:
     current_state = stack[-1]
     current_input = input[0]
     current_rule = tokens_estados[current_input][current_state]
     log_temp = ""
     log_temp += "Current state: {0}\n".format(current_state)
     log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
-    if current_rule[0] == 's':
-      stack.append(current_input)
-      stack.append(int(current_rule[1:]))
-      input.pop(0)
-    elif current_rule[0] == 'r':
-      reduc = estados[int(current_rule[1:])][1].split(' ')
-      reduc.reverse()
-      for reduc_item in reduc:
-        if not stack == [0]:
-          last_value_in_stack = stack[-2:]
-          if last_value_in_stack[0] == reduc_item:
-            stack.pop()
-            stack.pop()
+    
+    if current_rule == '-':
 
-      new_stack_number = stack[-1]
-      stack.append(estados[int(current_rule[1:])][0])
-      new_stack_top = tokens_estados[stack[-1]][new_stack_number]
+      print(last_rule)
+      print(estados[int(last_rule[1:])][1].split(' '))
+      print(current_rule)
 
-      stack.append(int(new_stack_top))
+      msg = emanager.get_syntax_error_message(_input[index]['token'])
+      clogger.error(msg,'SYNTAX ERROR')
+      return False
+    else:
+      if current_rule[0] == 's':
+        stack.append(current_input)
+        stack.append(int(current_rule[1:]))
+        input.pop(0)
+      elif current_rule[0] == 'r':
+        last_rule = current_rule
+        reduc = estados[int(current_rule[1:])][1].split(' ')
+        reduc.reverse()
+        for reduc_item in reduc:
+          if not stack == [0]:
+            last_value_in_stack = stack[-2:]
+            if last_value_in_stack[0] == reduc_item:
+              stack.pop()
+              stack.pop()
 
-    log_temp += "\tInput: {0}\n".format(input)
-    log_temp += "\tStack: {0}\n".format(stack)
-    clogger.debug(log_temp)
-    clogger.print_break_line()
+        new_stack_number = stack[-1]
+        stack.append(estados[int(current_rule[1:])][0])
+        new_stack_top = tokens_estados[stack[-1]][new_stack_number]
+
+        stack.append(int(new_stack_top))
+      log_temp += "\tInput: {0}\n".format(input)
+      log_temp += "\tStack: {0}".format(stack)
+      clogger.debug(log_temp)
+      clogger.print_break_line()
+      index += 1
 
   clogger.one_line().info("Parser: File is syntactically correct")
+  return True
