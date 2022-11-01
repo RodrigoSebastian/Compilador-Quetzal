@@ -4,7 +4,7 @@
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 2.1.0 <!-- omit in toc --> 
+## Version: 2.2.1 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
@@ -55,6 +55,7 @@ Pasos que sigue el proyecto para compilar un programa en Quetzal:
     5. Se separa la linea analizada por espacios en blanco y se guardan en una lista
     6. Se separa la lista anterior por caracteres especiales y se guarda en una lista
     7. Se recorre la lista anterior y se verifica uno por uno el tipo de token que es. Creando una lista de tokens con su respectivo tipo y valor
+2. Con la tabla de sintaxis generada, se hará uso del analizador **LALR** para analizar la gramatica de Quetzal
 
 ## Licencia
 ``` 
