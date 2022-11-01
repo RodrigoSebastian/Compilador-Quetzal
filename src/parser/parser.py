@@ -1,12 +1,11 @@
-from __future__ import barry_as_FLUFL
-from lib2to3.pgen2 import token
-from syslog import closelog
 from tabulate import tabulate
 import pandas as pd
 from src.custom_logger import CustomLogger
+from src.error_manager import ErrorManager
 import src.lexical.definitions as defs
 
 clogger = CustomLogger(name='parser')
+emanager = ErrorManager()
 tokens_estados = {}
 estados = []
 
@@ -50,6 +49,7 @@ def analyze_input(_input):
 
   current_rule = 0
   error = False
+  index = -1
   while current_rule != 'acc' and error == False:
     current_state = stack[-1]
     current_input = input[0]
@@ -59,13 +59,8 @@ def analyze_input(_input):
     log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
     
     if current_rule == '-':
-      # error_position = original_line.find(token) + 1
-      line_number = 3
-      error_position = 3
-      token = token
-      msg = "In line {0}, position {1} → Token {2} is not valid {3}".format(line_number, error_position, token, 'noth')
-      clogger.error(msg,"SYNTAXIS ERROR")
-      clogger.without_format().info("")
+      msg = emanager.get_syntax_error_message(_input[index]['token'])
+      clogger.error(msg,'LEXICAL ERROR')
       return False
     else:
       if current_rule[0] == 's':
@@ -91,6 +86,7 @@ def analyze_input(_input):
       log_temp += "\tStack: {0}".format(stack)
       clogger.debug(log_temp)
       clogger.print_break_line()
+      index += 1
 
   clogger.one_line().info("Parser: File is syntactically correct")
   return True
