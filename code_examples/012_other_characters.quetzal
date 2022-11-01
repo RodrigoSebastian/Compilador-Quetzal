@@ -1,5 +1,0 @@
-//Casos con los que se rompe
-//b = '🐣'
-//b'\xf0\x9f\x90\xa3'
-//c = u'\u201d'
-//"jhhhjj"
