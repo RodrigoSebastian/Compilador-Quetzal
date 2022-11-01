@@ -1,16 +1,14 @@
 from src.custom_logger import CustomLogger
 from src.error_manager import ErrorManager
+from src.lexical.definitions import Definitions
 
-import src.lexical.definitions as defs
 from tabulate import tabulate
 import re
 import sys
 
 clogger = CustomLogger(name='lexical_reader')
+defs = Definitions()
 error_manager = ErrorManager()
-
-GL_LISTS = {}
-GL_COMPILERS = {}
 
 #! Funcion para imprimir la tabla de simbolos
 def print_tokens(definitions):
@@ -24,51 +22,6 @@ def print_tokens(definitions):
   
   clogger.without_format().debug(tabulate(only_for_print, headers=['Token', 'Valor', 'Token_INT'], showindex="always", tablefmt="pretty"))
 
-#! Funcion para inicializar las variables globales
-def important_initialization():
-  for db_operator in defs.DB_OPERATORS:
-    if db_operator not in GL_COMPILERS:
-      GL_COMPILERS[db_operator] = re.compile(r'{0}'.format(db_operator))
-    if 'TP_{0}'.format(defs.DB_OPERATORS[db_operator]) not in defs.TEMP_RESERVED_WORDS:
-      defs.TEMP_RESERVED_WORDS['TP_{0}'.format(defs.DB_OPERATORS[db_operator])] = defs.DB_OPERATORS[db_operator]
-
-  clogger.debug("New reserved words list: {0}".format(defs.TEMP_RESERVED_WORDS))
-
-  amount_tokens = len(defs.TOKEN_TYPES_INT)
-  for element in defs.SYMBOLS:
-    defs.TOKEN_TYPES[defs.SYMBOLS[element]] = element
-    defs.TOKEN_TYPES_INT[element] = amount_tokens
-    amount_tokens += 1
-
-  amount_tokens = len(defs.TOKEN_TYPES_INT)
-  for element in defs.RESERVERD_WORDS:
-    defs.TOKEN_TYPES_INT[defs.RESERVERD_WORDS[element]] = amount_tokens
-    amount_tokens += 1
-
-  amount_tokens = len(defs.TOKEN_TYPES_INT)
-  for element in defs.OPERATORS:
-    defs.TOKEN_TYPES[defs.OPERATORS[element]] = element
-    defs.TOKEN_TYPES_INT[element] = amount_tokens
-    amount_tokens += 1
-
-  amount_tokens = len(defs.TOKEN_TYPES_INT)
-  for element in defs.DB_OPERATORS:
-    defs.TOKEN_TYPES[defs.DB_OPERATORS[element]] = element
-    defs.TOKEN_TYPES_INT[element] = amount_tokens
-    amount_tokens += 1
-
-  temp = []
-  for token_type_int in defs.TOKEN_TYPES:
-    temp.append([token_type_int,defs.TOKEN_TYPES[token_type_int]])
-  clogger.debug("New token types list:\n{0}".format(tabulate(temp, headers=['Token', 'Value'], showindex="always", tablefmt="pretty")))
-
-  temp = []
-  for token_type_int in defs.TOKEN_TYPES_INT:
-    temp.append([token_type_int,defs.TOKEN_TYPES_INT[token_type_int]])
-  clogger.debug("New token types int list:\n{0}".format(tabulate(temp, headers=['Token', 'INT'], showindex="always", tablefmt="pretty")))
-
-  clogger.print_break_line()
-
 #! Función que cambia todas las variables de tipo _type_token y las remplazamos por una palabra reservada: _name
 #! testeo = "perro caliente" -> testeo = TP_STRING
 def replace_token_by_tory(_type_token, _line, _name = ""):
@@ -77,14 +30,14 @@ def replace_token_by_tory(_type_token, _line, _name = ""):
   for token in token_list:
     line = line.replace(token, _name)
     if _name != "":
-      if _name.strip() not in GL_LISTS:
-        GL_LISTS[_name.strip()] = []
-      GL_LISTS[_name.strip()].append(token)
+      if _name.strip() not in defs.GL_LISTS:
+        defs.GL_LISTS[_name.strip()] = []
+      defs.GL_LISTS[_name.strip()].append(token)
 
   clogger.debug('Changing to {0}:'.format(_name.strip() if _name != "" else "BLANK if is a COMMENT")+' {0}'.format(line)) if token_list else None
   return line
 
-def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0):
+def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0):  
   is_comment_block = _is_comment_block
 
   if line == '\n':                                     #! Si la linea esta vacia, no hacer nada
@@ -119,7 +72,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
 
   for db_operator in defs.DB_OPERATORS:                #! Reemplazamos los operadores dobles por un token
     temp_key = 'TP_{0}'.format(defs.DB_OPERATORS[db_operator])
-    line = replace_token_by_tory(GL_COMPILERS[db_operator], line, ' TP_{0} '.format(defs.TEMP_RESERVED_WORDS[temp_key]))
+    line = replace_token_by_tory(defs.GL_COMPILERS[db_operator], line, ' TP_{0} '.format(defs.TEMP_RESERVED_WORDS[temp_key]))
 
   clogger.debug("Line after replacing words: " + line.strip('\n'))
 
@@ -154,20 +107,20 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
           value = []
-          split_string = GL_LISTS[token][0].split(' ')
+          split_string = defs.GL_LISTS[token][0].split(' ')
           for string in split_string:
-            if string in GL_LISTS:
-              new_string = GL_LISTS[string][0]
-              GL_LISTS[string].pop(0)
+            if string in defs.GL_LISTS:
+              new_string = defs.GL_LISTS[string][0]
+              defs.GL_LISTS[string].pop(0)
               value.append(new_string)
             else:
               value.append(string)
-          GL_LISTS[token][0] = ' '.join(value)
+          defs.GL_LISTS[token][0] = ' '.join(value)
 
         dict_token = defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]
-        dict_value = GL_LISTS[token][0]
+        dict_value = defs.GL_LISTS[token][0]
         dict_number = defs.TOKEN_TYPES_INT[defs.TOKEN_TYPES[defs.TEMP_RESERVED_WORDS[token]]]
-        GL_LISTS[token].pop(0)
+        defs.GL_LISTS[token].pop(0)
       else:
         dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
         dict_number = defs.TOKEN_TYPES_INT['ID']
@@ -184,8 +137,6 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
       dict_number = defs.TOKEN_TYPES_INT[token]
     else:
-      print("Token no identificado: " + token)
-      print('Linea: ' + str(_line_number))
       msg = error_manager.get_lexical_error_message(token,_line_number)
       clogger.error(msg,'LEXICAL ERROR')
       clogger.without_format().info("")
@@ -215,7 +166,21 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
     file_lines = file.readlines()
     error_manager.set_original_file(file_name)
     clogger.print_break_line()
-    important_initialization()
+    defs.custom_init()
+    
+    clogger.debug("New reserved words list: {0}".format(defs.TEMP_RESERVED_WORDS))
+    
+    temp = []
+    for token_type_int in defs.TOKEN_TYPES:
+      temp.append([token_type_int,defs.TOKEN_TYPES[token_type_int]])
+    clogger.debug("\nNew token types list:\n{0}".format(tabulate(temp, headers=['Token', 'Value'], showindex="always", tablefmt="pretty")))
+
+    temp = []
+    for token_type_int in defs.TOKEN_TYPES_INT:
+      temp.append([token_type_int,defs.TOKEN_TYPES_INT[token_type_int]])
+    clogger.debug("\nNew token types int list:\n{0}".format(tabulate(temp, headers=['Token', 'INT'], showindex="always", tablefmt="pretty")))
+
+    clogger.print_break_line()
 
     tokens = []
     is_comment_block = False

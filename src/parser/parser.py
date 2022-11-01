@@ -2,12 +2,13 @@ from tabulate import tabulate
 import pandas as pd
 from src.custom_logger import CustomLogger
 from src.error_manager import ErrorManager
-import src.lexical.definitions as defs
+from src.lexical.definitions import Definitions
 
 clogger = CustomLogger(name='parser')
 emanager = ErrorManager()
 tokens_estados = {}
 estados = []
+defs = Definitions()
 
 def init():
   global estados

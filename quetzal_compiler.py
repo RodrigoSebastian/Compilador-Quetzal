@@ -1,13 +1,11 @@
 import os
 import click
-from src.lexical.lexical_reader import Get_tokens_list_from_file
+from src.lexical.refacto_lexical_reader import Get_tokens_list_from_file
 import src.parser.parser as ps
 from src.custom_logger import CustomLogger
 
 CURRENT_VERSION = '2.0.0'
 clogger = CustomLogger(name='main')
-
-os.system("clear")
 
 @click.command()
 @click.option('--file', '-f', help='The path to the file to be compiled [required if test mode is not enabled]', type=click.Path(exists=True))
