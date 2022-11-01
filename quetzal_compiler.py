@@ -1,6 +1,6 @@
 import os
 import click
-from src.lexical.refacto_lexical_reader import Get_tokens_list_from_file
+from src.lexical.lexical_reader import Get_tokens_list_from_file
 import src.parser.parser as ps
 from src.custom_logger import CustomLogger
 

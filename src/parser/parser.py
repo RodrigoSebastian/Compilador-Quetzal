@@ -1,8 +1,9 @@
-from tabulate import tabulate
-import pandas as pd
 from src.custom_logger import CustomLogger
 from src.error_manager import ErrorManager
 from src.lexical.definitions import Definitions
+
+from tabulate import tabulate
+import pandas as pd
 
 clogger = CustomLogger(name='parser')
 emanager = ErrorManager()
