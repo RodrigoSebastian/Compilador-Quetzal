@@ -11,6 +11,8 @@ tokens_estados = {}
 estados = []
 defs = Definitions()
 
+tree_info = []
+
 def init():
   global estados
   global tokens_estados
@@ -70,6 +72,7 @@ def analyze_input(_input):
         stack.append(int(current_rule[1:]))
         input.pop(0)
       elif current_rule[0] == 'r':
+        tree_info.append(current_rule)
         reduc = estados[int(current_rule[1:])][1].split(' ')
         reduc.reverse()
         for reduc_item in reduc:
@@ -91,4 +94,61 @@ def analyze_input(_input):
       index += 1
 
   clogger.one_line().info("Parser: File is syntactically correct")
+  
+  final_tree = get_info(tree_info)
+  clogger.debug("\nFinal tree:")
+  print_tree(final_tree,0)
   return True
+
+def print_tree(lista,tab):
+  for idx, l in enumerate(lista):
+    if type(l) == list:
+      print_tree(l,tab + 2)
+    else:
+      msg = ''
+      msg += ' ' * tab
+      msg += l
+      clogger.without_format().debug(msg)
+
+def get_info(_tree_info):
+  info_temporal = []
+  index_info_temp = []
+  stop = ''
+
+  while stop != 'PROGRAM':
+    original_state = estados[int(_tree_info[0][1:])]
+    original_rule = original_state[0]
+    original_deriv = original_state[1].split(' ')
+    original_info = [original_rule, original_deriv]
+
+    new_deriv = []
+    if original_deriv == ["''"]:
+      if len(original_info[1]) == 1:
+        original_info[1] = original_info[1][0]
+      info_temporal.append(original_info)
+      index_info_temp.append(original_rule)
+    else:
+      for item in original_deriv:
+        if item in index_info_temp:
+          index = index_info_temp.index(item)
+          new_deriv.append(info_temporal[index])
+
+          del info_temporal[index]
+          del index_info_temp[index]
+        else:
+          new_deriv.append(item)
+
+      if len(new_deriv) == 1:
+        new_deriv = new_deriv[0]
+      original_info = [original_rule, new_deriv]
+      info_temporal.append(original_info)
+      index_info_temp.append(original_rule)
+
+    try:
+      stop = info_temporal[0][0]
+    except:
+      stop = ''
+
+    _tree_info.pop(0)
+
+  return info_temporal[0]
