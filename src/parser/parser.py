@@ -63,7 +63,7 @@ def analyze_input(_input):
     log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
     
     if current_rule == '-':
-      msg = emanager.get_syntax_error_message(_input[index]['token'])
+      msg = emanager.get_syntax_error_message(_input[index]['token']) # TODO: Check validation
       clogger.error(msg,'SYNTAX ERROR')
       return False
     else:

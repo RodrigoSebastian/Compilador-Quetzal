@@ -1,0 +1,11 @@
+var x;
+main() {
+ var y, fun;
+ fun = [72, 61, 9]
+ y = 3;
+ fun = 5;
+ b = readi();
+ prints("Hello!");
+ println();
+ fun(a, x * fun);
+}
