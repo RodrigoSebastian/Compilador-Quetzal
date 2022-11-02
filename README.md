@@ -4,7 +4,7 @@
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 2.3.0 <!-- omit in toc --> 
+## Version: 2.3.1 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
