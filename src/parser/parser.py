@@ -1,14 +1,7 @@
-from cmd import IDENTCHARS
-from distutils.dir_util import copy_tree
-from hashlib import new
-from imp import init_frozen
-from re import T
-from webbrowser import get
 from src.custom_logger import CustomLogger
 from src.error_manager import ErrorManager
 from src.lexical.definitions import Definitions
 
-from treelib import Node, Tree
 from tabulate import tabulate
 import pandas as pd
 
@@ -19,8 +12,6 @@ estados = []
 defs = Definitions()
 
 tree_info = []
-tree = Tree()
-# tree.create_node("R","R")
 
 def init():
   global estados
