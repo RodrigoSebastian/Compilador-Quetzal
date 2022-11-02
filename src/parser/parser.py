@@ -1,5 +1,7 @@
+from cmd import IDENTCHARS
 from distutils.dir_util import copy_tree
 from hashlib import new
+from imp import init_frozen
 from re import T
 from webbrowser import get
 from src.custom_logger import CustomLogger
@@ -17,6 +19,8 @@ estados = []
 defs = Definitions()
 
 tree_info = []
+tree = Tree()
+# tree.create_node("R","R")
 
 def init():
   global estados
@@ -100,50 +104,22 @@ def analyze_input(_input):
 
   clogger.one_line().info("Parser: File is syntactically correct")
   
-  print("\n=======================================\n")
-  final_tree = recorrer(tree_info)
-  print("\n=======================================\n")
-  recorrer_final(final_tree,0)
-  print("\n=======================================\n")
+  final_tree = get_info(tree_info)
+  clogger.debug("\nFinal tree:")
+  print_tree(final_tree,0)
   return True
 
-def testo(_tree_info):
-  print(_tree_info)
-  print("\n=======================================\n")
-  final_tree = []
-
-  for idx in range(2):
-    state = estados[int(_tree_info[0][1:])]
-    rule = state[0]
-    deriv = state[1].split(' ')
-
-    temp_info = [rule, deriv]
-    
-    if final_tree == []:
-      final_tree = temp_info
-    else:
-      if rule in final_tree[1]:
-        final_tree[1] = temp_info
-
-    print("State: {0}".format(state))
-    print("Rule: {0}".format(rule))
-    print("Deriv: {0}".format(deriv))
-    print("Temp info: {0}".format(temp_info))
-    print("\n=======================================\n")
-    _tree_info.pop(0)
-
-
-  print("Final tree: {0}".format(final_tree))
-  print("\n=======================================\n")
-
-def recorrer_final(lista,tab):
-  for l in lista:
+def print_tree(lista,tab):
+  for idx, l in enumerate(lista):
     if type(l) == list:
-      recorrer_final(l,tab+1)
+      print_tree(l,tab + 2)
     else:
-      print(' ' * tab + l)
+      msg = ''
+      msg += ' ' * tab
+      msg += l
+      clogger.without_format().debug(msg)
 
-def recorrer(_tree_info):
+def get_info(_tree_info):
   info_temporal = []
   index_info_temp = []
   stop = ''
@@ -153,11 +129,6 @@ def recorrer(_tree_info):
     original_rule = original_state[0]
     original_deriv = original_state[1].split(' ')
     original_info = [original_rule, original_deriv]
-
-    print('Tree info: {0}'.format(_tree_info[0]))
-    print("State: {0}".format(original_state))
-    print("Rule: {0}".format(original_rule))
-    print("Deriv: {0}".format(original_deriv))
 
     new_deriv = []
     if original_deriv == ["''"]:
@@ -187,9 +158,6 @@ def recorrer(_tree_info):
     except:
       stop = ''
 
-    print("\n=======================================\n")
     _tree_info.pop(0)
-
-  print("Temp info: {0}".format(info_temporal[0]))
 
   return info_temporal[0]
