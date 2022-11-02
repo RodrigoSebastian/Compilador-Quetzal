@@ -1,9 +1,3 @@
-<style>
-    .gitImg {
-        margin-left: 2rem;
-    }
-</style>
-
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://badgen.net/badge/release/v2.3.1/green?)]() 
 <p align="center">
