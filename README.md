@@ -1,10 +1,11 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Version](https://badgen.net/badge/release/v2.3.1/green?)]() 
 <p align="center">
     <img src="img/quetzal_logo.png" alt="logo_quetzal">
 </p>
 
 ## Compilador Quetzal (TC3048) <!-- omit in toc --> 
-## Version: 1.2.3 <!-- omit in toc --> 
+## Version: 2.3.1 <!-- omit in toc --> 
 ## Tabla de contenidos <!-- omit in toc --> 
 - [Introduccion](#introduccion)
 - [Modo de uso](#modo-de-uso)
@@ -28,7 +29,7 @@ Para ejecutar el compilador, ejecuta el comando:
 - ``` py quetzal_compiler.py [OPTIONS]``` en **Windows**
 - ``` python3 quetzal_compiler.py [OPTIONS] ``` en **Mac/GNU Linux**
 
-### OPTIONS:
+### OPTIONS: <!-- omit in toc -->
   * ```-f, --file PATH```  La ruta al archivo a compilar [requerido si el modo de ```--test``` no esta activado]
 
   * ```-t, --test PATH```  Ejecuta el compilador con todos los archivos de prueba en esta carpeta [requerido si el modo ```--file``` no esta activado]
@@ -42,7 +43,7 @@ Para ejecutar el compilador, ejecuta el comando:
 ## Procedimiento
 
 Pasos que sigue el proyecto para compilar un programa en Quetzal:
-1. Analizar el programa en Quetzal y generar una tabla de sintaxis. Para eso se realizan los siguientes pasos mediante el código **lexical_reader.py** (El orden es importante):
+1. Analizar el programa en Quetzal y generar una tabla de tokens. Para eso se realizan los siguientes pasos mediante el código **lexical_reader.py** (El orden es importante):
     1. Leer el archivo de entrada y separarlo en filas y se mandan a la función de separación de tokens
     2. Se verifica que la linea ingresada no sea una linea vacia. Si lo es, se ignora
     3. Se verifica, en el siguiente orden, si la linea es un token de tipo y se sustituye por una variable temporal:
@@ -55,6 +56,7 @@ Pasos que sigue el proyecto para compilar un programa en Quetzal:
     5. Se separa la linea analizada por espacios en blanco y se guardan en una lista
     6. Se separa la lista anterior por caracteres especiales y se guarda en una lista
     7. Se recorre la lista anterior y se verifica uno por uno el tipo de token que es. Creando una lista de tokens con su respectivo tipo y valor
+2. Con la tabla de sintaxis generada, se hará uso del analizador **LALR** para analizar la syntaxis del c&oacute;digo
 
 ## Licencia
 ``` 
@@ -73,6 +75,6 @@ Pasos que sigue el proyecto para compilar un programa en Quetzal:
    limitations under the License.
 ```
 ## Autores
-- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian"><img src="img/git.png" height="15rem" style="margin-left: 2rem;"></a>
-- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14"><img src="img/git.png" height="15rem" style="margin-left: 2rem;"></a>
-- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10"><img src="img/git.png" height="15rem" style="margin-left:2rem;"></a>
+- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
+- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
+- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10"><img src="img/gitW.png" height="15rem" class="gitImg"></a>

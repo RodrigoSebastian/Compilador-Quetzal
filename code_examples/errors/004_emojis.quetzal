@@ -1,0 +1,5 @@
+main() {
+    prints(🙁);;;
+    prints('x');
+    return 42;;;
+}
