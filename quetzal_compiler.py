@@ -4,7 +4,7 @@ from src.lexical.lexical_reader import Get_tokens_list_from_file
 import src.parser.parser as ps
 from src.custom_logger import CustomLogger
 
-CURRENT_VERSION = '2.2.2'
+CURRENT_VERSION = '2.3.0'
 clogger = CustomLogger(name='main')
 
 @click.command()
