@@ -75,6 +75,6 @@ Pasos que sigue el proyecto para compilar un programa en Quetzal:
    limitations under the License.
 ```
 ## Autores
-- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
-- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
-- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
+- Rodrigo Sebasti&aacute;n de la Rosa Andr&eacute;s <a href="https://github.com/RodrigoSebastian" target="_blank"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
+- Israel Sanchez Hinojosa <a href="https://github.com/Isra-14" target="_blank"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
+- Antonio Misael Delgado Salmer&oacute;n <a href="https://github.com/MisaDelgado10" target="_blank"><img src="img/gitW.png" height="15rem" class="gitImg"></a>
