@@ -123,15 +123,14 @@ def get_info(_tree_info):
 
     new_deriv = []
     if original_deriv == ["''"]:
-      if len(original_info[1]) == 1:
-        original_info[1] = original_info[1][0]
       info_temporal.append(original_info)
       index_info_temp.append(original_rule)
     else:
       for item in original_deriv:
         if item in index_info_temp:
           index = index_info_temp.index(item)
-          new_deriv.append(info_temporal[index])
+          new_deriv.append(info_temporal[index][0])
+          new_deriv.append(info_temporal[index][1])
 
           del info_temporal[index]
           del index_info_temp[index]
