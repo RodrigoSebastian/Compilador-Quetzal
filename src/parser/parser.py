@@ -54,16 +54,22 @@ def analyze_input(_input):
   current_rule = 0
   error = False
   index = -1
+
+  position = -1
+  temp_token = ''
   while current_rule != 'acc' and error == False:
     current_state = stack[-1]
     current_input = input[0]
+    if(current_input != temp_token):
+      position += 1
+      temp_token = current_input
     current_rule = tokens_estados[current_input][current_state]
     log_temp = ""
     log_temp += "Current state: {0}\n".format(current_state)
     log_temp += "\tCurrent rule: {0}\n".format(tokens_estados[current_input][current_state])
     
     if current_rule == '-':
-      msg = emanager.get_syntax_error_message(_input[index]['token']) # TODO: Check validation
+      msg = emanager.get_syntax_error_message(_input[position-1]['token'], _input[position-1]['line'])
       clogger.error(msg,'SYNTAX ERROR')
       return False
     else:
