@@ -225,8 +225,11 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       for dfsymbol in defs.GL_SYMBOL_TABLE:
         defs.GL_SYMBOL_TABLE[dfsymbol]['references'] = list(set(defs.GL_SYMBOL_TABLE[dfsymbol]['references']))
 
-      for defsasa in defs.GL_SYMBOL_TABLE:
-        print(defsasa, defs.GL_SYMBOL_TABLE[defsasa])
+      temp = []
+      for dfsymbol in defs.GL_SYMBOL_TABLE:
+        temp.append([dfsymbol,defs.GL_SYMBOL_TABLE[dfsymbol]["type"],defs.GL_SYMBOL_TABLE[dfsymbol]["environment"],defs.GL_SYMBOL_TABLE[dfsymbol]["line"],defs.GL_SYMBOL_TABLE[dfsymbol]["references"]])
+      clogger.debug("\nSymbol table:\n{0}\n".format(tabulate(temp, headers=['Token','Type','Environment','Line','References'], showindex="always", tablefmt="pretty")))
+
     return definitions
 
   else:
