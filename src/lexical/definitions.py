@@ -65,6 +65,7 @@ class Definitions(object):
 
   GL_LISTS = {}
   GL_COMPILERS = {}
+  GL_SYMBOL_TABLE = {}
 
   clogger = CustomLogger(name='definitions')
 
