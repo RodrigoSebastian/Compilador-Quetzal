@@ -37,7 +37,10 @@ def replace_token_by_tory(_type_token, _line, _name = ""):
   clogger.debug('Changing to {0}:'.format(_name.strip() if _name != "" else "BLANK if is a COMMENT")+' {0}'.format(line)) if token_list else None
   return line
 
+environment = 0
+defs.GL_ENVIRONMENT.append(environment)
 def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0):  
+  global environment
   is_comment_block = _is_comment_block
 
   if line == '\n':                                     #! Si la linea esta vacia, no hacer nada
@@ -94,15 +97,21 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
   
   clogger.debug("Line after splitting by punctuation: " + str(temp_tokens))
 
+  siguiente_en_tabla = False
   for token in temp_tokens:
     dict_value = token
 
     #! Identificamos si el token es un ID
     if defs.IDENTIFIER.match(token):
+      if token in defs.GL_SYMBOL_TABLE:
+        defs.GL_SYMBOL_TABLE[token]['references'].append(_line_number + 1)
+
       #! Identificamos si el token es una palabra reservada
       if token in defs.RESERVERD_WORDS:
         dict_token = defs.RESERVERD_WORDS[token]
         dict_number = defs.TOKEN_TYPES_INT[token]
+        if token == 'var':
+          siguiente_en_tabla = True
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
@@ -124,6 +133,8 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       else:
         dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
         dict_number = defs.TOKEN_TYPES_INT['ID']
+        if siguiente_en_tabla:
+          defs.GL_SYMBOL_TABLE[token] = {'type': 'VAR', 'environment': defs.GL_ENVIRONMENT[-1], 'line': _line_number + 1, 'references': []}
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
       dict_token = defs.TOKEN_TYPES['TP_INTEGER']
@@ -136,6 +147,13 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
     elif token in defs.SYMBOLS:
       dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
       dict_number = defs.TOKEN_TYPES_INT[token]
+      if token == ',' and siguiente_en_tabla:
+        siguiente_en_tabla = True
+      if token == '{':
+        environment += 1
+        defs.GL_ENVIRONMENT.append(environment)
+      if token == '}':
+        defs.GL_ENVIRONMENT.pop()
     else:
       msg = error_manager.get_lexical_error_message(token,_line_number)
       clogger.error(msg,'LEXICAL ERROR')
@@ -203,6 +221,15 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       clogger.print_break_line()
       
       clogger.one_line().info('Lexical: File is splitted in tokens')
+
+      for dfsymbol in defs.GL_SYMBOL_TABLE:
+        defs.GL_SYMBOL_TABLE[dfsymbol]['references'] = list(set(defs.GL_SYMBOL_TABLE[dfsymbol]['references']))
+
+      temp = []
+      for dfsymbol in defs.GL_SYMBOL_TABLE:
+        temp.append([dfsymbol,defs.GL_SYMBOL_TABLE[dfsymbol]["type"],defs.GL_SYMBOL_TABLE[dfsymbol]["environment"],defs.GL_SYMBOL_TABLE[dfsymbol]["line"],defs.GL_SYMBOL_TABLE[dfsymbol]["references"]])
+      clogger.debug("\nSymbol table:\n{0}\n".format(tabulate(temp, headers=['Token','Type','Environment','Line','References'], showindex="always", tablefmt="pretty")))
+
     return definitions
 
   else:
