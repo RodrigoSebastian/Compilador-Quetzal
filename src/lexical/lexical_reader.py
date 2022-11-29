@@ -38,6 +38,7 @@ def replace_token_by_tory(_type_token, _line, _name = ""):
   return line
 
 environment = 0
+defs.GL_ENVIRONMENT.append(environment)
 def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0):  
   global environment
   is_comment_block = _is_comment_block
@@ -133,7 +134,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
         dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
         dict_number = defs.TOKEN_TYPES_INT['ID']
         if siguiente_en_tabla:
-          defs.GL_SYMBOL_TABLE[token] = {'type': 'VAR', 'environment': environment, 'line': _line_number + 1, 'references': []}
+          defs.GL_SYMBOL_TABLE[token] = {'type': 'VAR', 'environment': defs.GL_ENVIRONMENT[-1], 'line': _line_number + 1, 'references': []}
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
       dict_token = defs.TOKEN_TYPES['TP_INTEGER']
@@ -150,8 +151,9 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
         siguiente_en_tabla = True
       if token == '{':
         environment += 1
-      elif token == '}':
-        environment -= 1
+        defs.GL_ENVIRONMENT.append(environment)
+      if token == '}':
+        defs.GL_ENVIRONMENT.pop()
     else:
       msg = error_manager.get_lexical_error_message(token,_line_number)
       clogger.error(msg,'LEXICAL ERROR')
