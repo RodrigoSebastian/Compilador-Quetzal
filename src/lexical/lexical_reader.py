@@ -103,8 +103,10 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
 
     #! Identificamos si el token es un ID
     if defs.IDENTIFIER.match(token):
-      if token in defs.GL_SYMBOL_TABLE:
-        defs.GL_SYMBOL_TABLE[token]['references'].append(_line_number + 1)
+      for symtable in defs.GL_SYMBOL_TABLE:
+        if token == symtable['token']:
+          symtable['references'].append(_line_number + 1)
+          break;
 
       #! Identificamos si el token es una palabra reservada
       if token in defs.RESERVERD_WORDS:
@@ -134,7 +136,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
         dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
         dict_number = defs.TOKEN_TYPES_INT['ID']
         if siguiente_en_tabla:
-          defs.GL_SYMBOL_TABLE[token] = {'type': 'VAR', 'environment': defs.GL_ENVIRONMENT[-1], 'line': _line_number + 1, 'references': []}
+          defs.GL_SYMBOL_TABLE.append({'token': token, 'type': 'VAR', 'environment': defs.GL_ENVIRONMENT[-1], 'line': _line_number + 1, 'references': []})
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
       dict_token = defs.TOKEN_TYPES['TP_INTEGER']
@@ -223,11 +225,11 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       clogger.one_line().info('Lexical: File is splitted in tokens')
 
       for dfsymbol in defs.GL_SYMBOL_TABLE:
-        defs.GL_SYMBOL_TABLE[dfsymbol]['references'] = list(set(defs.GL_SYMBOL_TABLE[dfsymbol]['references']))
+        dfsymbol['references'] = list(set(dfsymbol['references']))
 
       temp = []
       for dfsymbol in defs.GL_SYMBOL_TABLE:
-        temp.append([dfsymbol,defs.GL_SYMBOL_TABLE[dfsymbol]["type"],defs.GL_SYMBOL_TABLE[dfsymbol]["environment"],defs.GL_SYMBOL_TABLE[dfsymbol]["line"],defs.GL_SYMBOL_TABLE[dfsymbol]["references"]])
+        temp.append([dfsymbol['token'],dfsymbol['type'],dfsymbol['environment'],dfsymbol['line'],dfsymbol['references']])
       clogger.debug("\nSymbol table:\n{0}\n".format(tabulate(temp, headers=['Token','Type','Environment','Line','References'], showindex="always", tablefmt="pretty")))
 
     return definitions
