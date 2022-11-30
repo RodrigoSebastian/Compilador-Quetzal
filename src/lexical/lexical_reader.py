@@ -97,21 +97,20 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
   
   clogger.debug("Line after splitting by punctuation: " + str(temp_tokens))
 
-  siguiente_en_tabla = False
   for token in temp_tokens:
     dict_value = token
 
     #! Identificamos si el token es un ID
     if defs.IDENTIFIER.match(token):
-      if token in defs.GL_SYMBOL_TABLE:
-        defs.GL_SYMBOL_TABLE[token]['references'].append(_line_number + 1)
+      for symtable in defs.GL_SYMBOL_TABLE:
+        if token == symtable['token'] and symtable['vivo']:
+          symtable['references'].append(_line_number + 1)
+          break;
 
       #! Identificamos si el token es una palabra reservada
       if token in defs.RESERVERD_WORDS:
         dict_token = defs.RESERVERD_WORDS[token]
         dict_number = defs.TOKEN_TYPES_INT[token]
-        if token == 'var':
-          siguiente_en_tabla = True
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
@@ -133,8 +132,46 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       else:
         dict_token = defs.TOKEN_TYPES['TP_INDENTIFIER']
         dict_number = defs.TOKEN_TYPES_INT['ID']
-        if siguiente_en_tabla:
-          defs.GL_SYMBOL_TABLE[token] = {'type': 'VAR', 'environment': defs.GL_ENVIRONMENT[-1], 'line': _line_number + 1, 'references': []}
+        ambiente = '-'.join(str(e) for e in defs.GL_ENVIRONMENT)
+
+        tempo_index = temp_tokens.index(token)
+        param_count = 0
+        funcion = ""
+        if tempo_index < len(temp_tokens) - 1:
+          if temp_tokens[tempo_index + 1] == '(':
+            funcion_name = token + '()'
+            if (funcion_name not in defs.GL_FUNCTION_DEFINITIONS) and defs.GL_ENVIRONMENT[-1] == 0:
+              params_stack = 0
+              for ff in range(tempo_index,len(temp_tokens)):
+                funcion = funcion + temp_tokens[ff]
+                if temp_tokens[ff] == '(': params_stack += 1
+                if temp_tokens[ff] == ')': params_stack -= 1
+                if params_stack <= 0 and temp_tokens[ff] != token:
+                  break
+            
+              start_parameters = funcion.find('(') + 1
+              parameters = funcion[start_parameters:-1]
+              have_function = parameters.find('(')
+              end_function = parameters.find(')')
+              res = list(range(have_function,end_function + 1))
+              while have_function != -1:
+                parameters = ''.join([param for idx, param in enumerate(parameters) if idx not in res])
+
+                have_function = parameters.find('(')
+                end_function = parameters.find(')')
+                res = list(range(have_function,end_function + 1))
+
+              param_count = len([value for value in parameters.split(',') if value != ''])
+              defs.GL_FUNCTION_DEFINITIONS[funcion_name] = param_count
+
+        add_in_table = True
+        for symtable in defs.GL_SYMBOL_TABLE:
+          if token == symtable['token'] and symtable['vivo'] == True:
+            add_in_table = False
+            break;
+        
+        if add_in_table:
+          defs.GL_SYMBOL_TABLE.append({'token': token, 'type': 'Int32', 'environment': ambiente, 'line': _line_number + 1, 'references': [], 'vivo': True })
     #! Identificamos si el token es un numero
     elif defs.LITERA_INTEGER.match(token):
       dict_token = defs.TOKEN_TYPES['TP_INTEGER']
@@ -147,13 +184,15 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
     elif token in defs.SYMBOLS:
       dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
       dict_number = defs.TOKEN_TYPES_INT[token]
-      if token == ',' and siguiente_en_tabla:
-        siguiente_en_tabla = True
       if token == '{':
         environment += 1
         defs.GL_ENVIRONMENT.append(environment)
       if token == '}':
-        defs.GL_ENVIRONMENT.pop()
+        last_environment = defs.GL_ENVIRONMENT.pop()
+        for symtable in defs.GL_SYMBOL_TABLE:
+          if symtable['environment'].split('-')[-1] == str(last_environment):
+
+            symtable['vivo'] = False
     else:
       msg = error_manager.get_lexical_error_message(token,_line_number)
       clogger.error(msg,'LEXICAL ERROR')
@@ -223,12 +262,18 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
       clogger.one_line().info('Lexical: File is splitted in tokens')
 
       for dfsymbol in defs.GL_SYMBOL_TABLE:
-        defs.GL_SYMBOL_TABLE[dfsymbol]['references'] = list(set(defs.GL_SYMBOL_TABLE[dfsymbol]['references']))
+        dfsymbol['references'] = list(set(dfsymbol['references']))
+        dfsymbol['references'].sort()
 
       temp = []
       for dfsymbol in defs.GL_SYMBOL_TABLE:
-        temp.append([dfsymbol,defs.GL_SYMBOL_TABLE[dfsymbol]["type"],defs.GL_SYMBOL_TABLE[dfsymbol]["environment"],defs.GL_SYMBOL_TABLE[dfsymbol]["line"],defs.GL_SYMBOL_TABLE[dfsymbol]["references"]])
+        temp.append([dfsymbol['token'],dfsymbol['type'],dfsymbol['environment'].split('-')[-1],dfsymbol['line'],dfsymbol['references']])
       clogger.debug("\nSymbol table:\n{0}\n".format(tabulate(temp, headers=['Token','Type','Environment','Line','References'], showindex="always", tablefmt="pretty")))
+
+      temp = []
+      for fcdef in defs.GL_FUNCTION_DEFINITIONS:
+        temp.append([fcdef,defs.GL_FUNCTION_DEFINITIONS[fcdef]])
+      clogger.debug("\nFunctions table:\n{0}\n".format(tabulate(temp, headers=['Function','Parameters'], showindex="always", tablefmt="pretty")))
 
     return definitions
 
