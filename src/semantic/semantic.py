@@ -23,12 +23,17 @@ def validate_semantic(definitions):
   # It is also an error if the main function defines one or more parameters.
   # del defs.GL_FUNCTION_DEFINITIONS['main()']
   # defs.GL_FUNCTION_DEFINITIONS['main()'] = 4
-  if 'main()' not in defs.GL_FUNCTION_DEFINITIONS:
+  have_main = False
+  for function in defs.GL_FUNCTION_DEFINITIONS:
+    if function['name'] == 'main()':
+      have_main = True
+      if function['parameters'] != 0:
+        msg = emanager.get_semanctic_error_message('The main function defines one or more parameters.', None, 0)
+        clogger.error(msg,'SEMANTIC ERROR')
+        return False
+
+  if not have_main:
     msg = emanager.get_semanctic_error_message('Every program starts its execution in a function called main.', None, 0)
-    clogger.error(msg,'SEMANTIC ERROR')
-    return False
-  elif not defs.GL_FUNCTION_DEFINITIONS['main()'] == 0:
-    msg = emanager.get_semanctic_error_message('The main function defines one or more parameters.', None, 0)
     clogger.error(msg,'SEMANTIC ERROR')
     return False
 

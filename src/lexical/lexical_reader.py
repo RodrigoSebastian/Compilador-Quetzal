@@ -143,7 +143,12 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
         if tempo_index < len(temp_tokens) - 1:
           if temp_tokens[tempo_index + 1] == '(':
             funcion_name = token + '()'
-            if (funcion_name not in defs.GL_FUNCTION_DEFINITIONS) and defs.GL_ENVIRONMENT[-1] == 0:
+            function_exists = False
+            for function in defs.GL_FUNCTION_DEFINITIONS:
+              if function['name'] == funcion_name:
+                function_exists = True
+                break
+            if function_exists == False and defs.GL_ENVIRONMENT[-1] == 0:
               params_stack = 0
               for ff in range(tempo_index,len(temp_tokens)):
                 funcion = funcion + temp_tokens[ff]
@@ -165,7 +170,7 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
                 res = list(range(have_function,end_function + 1))
 
               param_count = len([value for value in parameters.split(',') if value != ''])
-              defs.GL_FUNCTION_DEFINITIONS[funcion_name] = param_count
+              defs.GL_FUNCTION_DEFINITIONS.append({'name': funcion_name, 'parameters': param_count})
 
         add_in_table = True
         for symtable in defs.GL_SYMBOL_TABLE:
@@ -287,7 +292,7 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
 
       temp = []
       for fcdef in defs.GL_FUNCTION_DEFINITIONS:
-        temp.append([fcdef,defs.GL_FUNCTION_DEFINITIONS[fcdef]])
+        temp.append([fcdef['name'],fcdef['parameters']])
       clogger.debug("\nFunctions table:\n{0}\n".format(tabulate(temp, headers=['Function','Parameters'], showindex="always", tablefmt="pretty")))
 
     return definitions

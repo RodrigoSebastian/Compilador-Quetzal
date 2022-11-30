@@ -67,7 +67,7 @@ class Definitions(object):
   # Quetzal API
   GL_QUETZAL_API = {}
   GL_SYMBOL_TABLE = []
-  GL_FUNCTION_DEFINITIONS = {}
+  GL_FUNCTION_DEFINITIONS = []
   GL_LISTS = {}
   GL_COMPILERS = {}
   GL_ENVIRONMENT = []
@@ -84,17 +84,17 @@ class Definitions(object):
   GL_SYMBOL_TABLE.append({'token':'get'    , 'type':'Int32', 'environment':'0', 'line':-1, 'references':[], 'vivo': True })
   GL_SYMBOL_TABLE.append({'token':'set'    , 'type':'Int32', 'environment':'0', 'line':-1, 'references':[], 'vivo': True })
 
-  GL_FUNCTION_DEFINITIONS['printi()']  = 1
-  GL_FUNCTION_DEFINITIONS['printc()']  = 1
-  GL_FUNCTION_DEFINITIONS['prints()']  = 1
-  GL_FUNCTION_DEFINITIONS['println()'] = 0
-  GL_FUNCTION_DEFINITIONS['readi()']   = 0
-  GL_FUNCTION_DEFINITIONS['reads()']   = 0
-  GL_FUNCTION_DEFINITIONS['new()']     = 1
-  GL_FUNCTION_DEFINITIONS['size()']    = 1
-  GL_FUNCTION_DEFINITIONS['add()']     = 2
-  GL_FUNCTION_DEFINITIONS['get()']     = 2
-  GL_FUNCTION_DEFINITIONS['set()']     = 3
+  GL_FUNCTION_DEFINITIONS.append({'name':'printi()', 'parameters'  : 1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'printc()', 'parameters'  : 1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'prints()', 'parameters'  : 1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'println()', 'parameters' : 0 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'readi()', 'parameters'   : 0 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'reads()', 'parameters'   : 0 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'new()', 'parameters'     : 1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'size()', 'parameters'    : 1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'add()', 'parameters'     : 2 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'get()', 'parameters'     : 2 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'set()', 'parameters'     : 3 })
 
   clogger = CustomLogger(name='definitions')
 
