@@ -5,6 +5,7 @@ from src.lexical.definitions import Definitions
 from tabulate import tabulate
 import re
 import sys
+import codecs
 
 clogger = CustomLogger(name='lexical_reader')
 defs = Definitions()
@@ -17,10 +18,10 @@ def print_tokens(definitions):
     temp = []
     temp.append(definition['token'])
     temp.append(definition['value'])
-    temp.append(definition['number'])
+    temp.append(definition['extra_info'])
     only_for_print.append(temp)
   
-  clogger.without_format().debug(tabulate(only_for_print, headers=['Token', 'Valor', 'Token_INT'], showindex="always", tablefmt="pretty"))
+  clogger.without_format().debug(tabulate(only_for_print, headers=['Token', 'Valor', 'Extra info'], showindex="always", tablefmt="pretty"))
 
 #! Función que cambia todas las variables de tipo _type_token y las remplazamos por una palabra reservada: _name
 #! testeo = "perro caliente" -> testeo = TP_STRING
@@ -63,6 +64,8 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
   line = replace_token_by_tory(defs.LITERAL_CHAR, line, ' TP_CHAR ')
   #! Reemplazamos los strings por un token
   line = replace_token_by_tory(defs.LITERAL_STRING, line, ' TP_STRING ')
+  #! Reemplazamos los booleanos por un token
+  line = replace_token_by_tory(defs.LITERAL_BOOLEAN, line, ' TP_BOOLEAN ')
   
   #! Quitamos todos los comentarios existentes en la linea
   line = replace_token_by_tory(defs.COMMENT, line) 
@@ -199,9 +202,21 @@ def Get_tokens_list_from_line(line, _is_comment_block = False, _line_number = 0)
       clogger.without_format().info("")
       return [], False, True
 
-    tokens_types.append({'token': dict_token, 'value': dict_value, 'number': dict_number, 'line': _line_number})
+    tokens_types.append({'token': dict_token, 'value': dict_value, 'number': dict_number, 'line': _line_number, 'extra_info': ''})
 
   clogger.debug("Resulting tokens: " + str(tokens_types))
+
+  for token in tokens_types:
+    if token['token'] == 'LIBO':
+      token['extra_info'] = int(token['value'].lower() == 'true')
+    elif token['token'] == 'LISTR':
+      token['extra_info'] = [ord(c) for c in token['value'] if c != '"']
+    elif token['token'] == 'LICH':
+      if defs.LITERAL_UNICODE_CHAR.match(token['value']):
+        new_value = token['value'].replace(r'\u',r'\U00')
+        token['extra_info'] = ord(codecs.decode(new_value[1:-1], 'unicode_escape'))
+      else:
+        token['extra_info'] = ord(codecs.decode(token['value'][1:-1], 'unicode_escape'))
 
   clogger.print_break_line()
   return tokens_types, is_comment_block, False
