@@ -6,7 +6,11 @@ clogger = CustomLogger(name='semantic')
 emanager = ErrorManager()
 defs = Definitions()
 
-def validate_semantic(definitions):
+def validate_semantic(definitions, original_file):
+
+  file = open(original_file, 'r')
+  lines = file.readlines()
+  lines = [line.replace('\n','') for line in lines]
 
   # defs.GL_SYMBOL_TABLE[15]['type'] = 'Int'
   # 1. The language only supports a 32-bit signed two’s complement integer (int32) data type. 
@@ -73,6 +77,40 @@ def validate_semantic(definitions):
 
   # 8. In every function call the number of arguments must match the number of
   # parameters contained in the corresponding function definition.
+  for function in defs.GL_FUNCTION_DEFINITIONS:
+    for variable in defs.GL_SYMBOL_TABLE:
+      if variable['token'] == function['name'][:-2] and len(variable['references']) > 0:
+        for reference in variable['references']:
+          linea_referencia = lines[reference-1]
+          tempo_index = linea_referencia.find(variable['token'])
+          temp2 = tempo_index
+          params_stack = 0
+          param_count = 0
+          funcion = ""
+          for ff in range(tempo_index,len(linea_referencia)):
+            funcion = funcion + linea_referencia[ff]
+            if linea_referencia[ff] == '(': params_stack += 1
+            if linea_referencia[ff] == ')': params_stack -= 1
+            if params_stack <= 0 and linea_referencia[ff] not in variable['token']:
+              break
+          start_parameters = funcion.find('(') + 1
+          parameters = funcion[start_parameters:-1]
+          have_function = parameters.find('(')
+          end_function = parameters.find(')')
+          res = list(range(have_function,end_function + 1))
+          while have_function != -1:
+            parameters = ''.join([param for idx, param in enumerate(parameters) if idx not in res])
+
+            have_function = parameters.find('(')
+            end_function = parameters.find(')')
+            res = list(range(have_function,end_function + 1))
+
+          param_count = len([value for value in parameters.split(',') if value != ''])
+
+          if param_count != function['parameters']:
+            msg = emanager.get_semanctic_error_message('In every function call the number of arguments must match the number of parameters contained in the corresponding function definition.\nThe function {0} has {1} parameters and you are passing {2}.'.format(function['name'], function['parameters'], param_count), variable['token'], reference)
+            clogger.error(msg,'SEMANTIC ERROR')
+            return False
 
   # 10. Each function has its own independent namespace for its local names.
   # This means that parameter and local variable names have to be unique inside the body of each function.

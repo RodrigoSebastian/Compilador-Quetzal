@@ -68,6 +68,7 @@ class Definitions(object):
   GL_QUETZAL_API = {}
   GL_SYMBOL_TABLE = []
   GL_FUNCTION_DEFINITIONS = []
+  GL_FUNCTION_REFERENCES = []
   GL_LISTS = {}
   GL_COMPILERS = {}
   GL_ENVIRONMENT = []

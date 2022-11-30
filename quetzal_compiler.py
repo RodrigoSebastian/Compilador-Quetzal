@@ -50,7 +50,7 @@ def compile(path,debug_mode,test = False):
   if definitions != []:  
     is_valid = ps.analyze_input(definitions)
     if is_valid:
-      is_valid = semantic.validate_semantic(definitions)
+      is_valid = semantic.validate_semantic(definitions, path)
       if is_valid:
         clogger.one_line().info("The code has been compiled successfully")
         clogger.without_format().info("")
