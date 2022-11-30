@@ -105,13 +105,18 @@ def Get_symbol_table(_token_list):
 
   for idx, temp_tokens in enumerate(_token_list):
     token = temp_tokens['token']
+    ambiente = '-'.join(str(e) for e in defs.GL_ENVIRONMENT)
 
     if defs.IDENTIFIER.match(token):
       if token in defs.RESERVERD_WORDS:
         if token == 'var':
           add_in_table = True
+        if token == 'loop':
+          defs.GL_LOOP_SCOPE.append({'path':ambiente,'line':temp_tokens['line']})
+        if token == 'break':
+          defs.GL_BREAK_SCOPE.append({'path':ambiente,'line':temp_tokens['line']})
+
       elif token not in defs.TEMP_RESERVED_WORDS:
-        ambiente = '-'.join(str(e) for e in defs.GL_ENVIRONMENT)
         if add_in_table:
           defs.GL_SYMBOL_TABLE.append({'token': token, 'type': 'Int32', 'environment': ambiente, 'line': temp_tokens['line'] + 1, 'references': [], 'vivo': True })
 

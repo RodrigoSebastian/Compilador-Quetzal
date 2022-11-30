@@ -67,6 +67,8 @@ class Definitions(object):
   # Quetzal API
   GL_QUETZAL_API = {}
   GL_SYMBOL_TABLE = []
+  GL_LOOP_SCOPE = []
+  GL_BREAK_SCOPE = []
   GL_FUNCTION_DEFINITIONS = []
   GL_FUNCTION_REFERENCES = []
   GL_LISTS = {}

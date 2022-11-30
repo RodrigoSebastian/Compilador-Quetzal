@@ -120,6 +120,16 @@ def validate_semantic(definitions, original_file):
   # 11. It’s an error to refer to a variable, parameter or function not in scope in the current namespace. -> OK
 
   # 12. The break statement can only be used inside the body of a loop statement. TODO
+  final_break = []
+  for loop in defs.GL_LOOP_SCOPE:
+    for breack in defs.GL_BREAK_SCOPE:
+      if len(breack['path'].replace(loop['path'],'')) == 0:
+        final_break.append(breack)
+
+  if len(final_break) > 0:
+    msg = emanager.get_semanctic_error_message('The break statement can only be used inside the body of a loop statement.', 'break', defs.GL_BREAK_SCOPE[0]['line'] + 1)
+    clogger.error(msg,'SEMANTIC ERROR')
+    return False
 
   # 13. Values of integer literals should be between -2147483648 and 2147483647 (−231 and 231−1, respectively).
   for definition in definitions:
