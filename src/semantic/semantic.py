@@ -45,11 +45,31 @@ def validate_semantic(definitions):
   # This means that you can have a global variable with the same name as a function and vice versa.   -> OK
 
   # 5. It’s an error to define two global variables with the same name.
+  for idx1, variable in enumerate(defs.GL_SYMBOL_TABLE):
+    for idx2, variable2 in enumerate(defs.GL_SYMBOL_TABLE):
+      if variable['token'] == variable2['token'] and variable['environment'] == variable2['environment'] and idx1 != idx2:
+        print(variable)
+        msg = emanager.get_semanctic_error_message('It\'s an error to define two global variables with the same name.\nYou have another variable is in line {0}.'.format(variable2['line']), variable['token'], variable['line'])
+        clogger.error(msg,'SEMANTIC ERROR')
+        return False
 
   # 6. It’s an error to define two functions with the same name.
+  for idx1, function in enumerate(defs.GL_FUNCTION_DEFINITIONS):
+    for idx2, function2 in enumerate(defs.GL_FUNCTION_DEFINITIONS):
+      if function['name'] == function2['name'] and idx1 != idx2:
+        msg = emanager.get_semanctic_error_message('It\'s an error to define two functions with the same name.\nYou have another function is in line {0}.'.format(function['line']), function['name'], function2['line'])
+        clogger.error(msg,'SEMANTIC ERROR')
+        return False
 
   # 7. A function definition is visible from the body of all the functions in a program, even from itself.
   # Thus, functions can call themselves recursively directly or indirectly.
+  for function in defs.GL_FUNCTION_DEFINITIONS:
+    for variable in defs.GL_SYMBOL_TABLE:
+      if variable['token'] == function['name']:
+        if int(variable['environment']) != 0:
+          msg = emanager.get_semanctic_error_message('A function definition is visible from the body of all the functions in a program, even from itself.', function['name'], function['line'])
+          clogger.error(msg,'SEMANTIC ERROR')
+          return False
 
   # 8. In every function call the number of arguments must match the number of
   # parameters contained in the corresponding function definition.
@@ -61,9 +81,15 @@ def validate_semantic(definitions):
 
   # 11. It’s an error to refer to a variable, parameter or function not in scope in the current namespace. -> OK
 
-  # 12. The break statement can only be used inside the body of a loop statement.
+  # 12. The break statement can only be used inside the body of a loop statement. TODO
 
   # 13. Values of integer literals should be between -2147483648 and 2147483647 (−231 and 231−1, respectively).
+  for definition in definitions:
+    if definition['token'] == 'LIIN':
+      if int(definition['extra_info']) < -2147483648 or int(definition['extra_info']) > 2147483647:
+        msg = emanager.get_semanctic_error_message('Values of integer literals should be between -2147483648 and 2147483647 (−231 and 231−1, respectively).', definition['value'], definition['line'] + 1)
+        clogger.error(msg,'SEMANTIC ERROR')
+        return False
 
 
   clogger.one_line().info("Semantic: File is semantically correct")

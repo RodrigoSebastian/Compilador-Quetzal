@@ -94,7 +94,7 @@ def Get_tokens_in_line(line, _is_comment_block = False, _line_number = 0):
   temp_tokens = [item for sublist in temp_tokens for item in sublist if item]
   temp_tokens = [token for token in temp_tokens if token != '\n']
   temp_tokens = [{'token': token, 'line': _line_number } for token in temp_tokens]
-  
+
   clogger.debug("Line after splitting by punctuation: " + str(temp_tokens))
   return temp_tokens, is_comment_block, False
 
@@ -121,12 +121,7 @@ def Get_symbol_table(_token_list):
         if tempo_index < len(_token_list) - 1:
           if _token_list[tempo_index + 1]['token'] == '(':
             funcion_name = token + '()'
-            function_exists = False
-            for function in defs.GL_FUNCTION_DEFINITIONS:
-              if function['name'] == funcion_name:
-                function_exists = True
-                break
-            if function_exists == False and defs.GL_ENVIRONMENT[-1] == 0:
+            if defs.GL_ENVIRONMENT[-1] == 0:
               params_stack = 0
               for ff in range(tempo_index,len(_token_list)):
                 funcion = funcion + _token_list[ff]['token']
@@ -148,7 +143,8 @@ def Get_symbol_table(_token_list):
                 res = list(range(have_function,end_function + 1))
 
               param_count = len([value for value in parameters.split(',') if value != ''])
-              defs.GL_FUNCTION_DEFINITIONS.append({'name': funcion_name, 'parameters': param_count})
+              defs.GL_FUNCTION_DEFINITIONS.append({'name': funcion_name, 'parameters': param_count, 'line': temp_tokens['line'] + 1 })
+              defs.GL_SYMBOL_TABLE.append({'token': token, 'type': 'Int32', 'environment': ambiente, 'line': temp_tokens['line'] + 1, 'references': [], 'vivo': True })
     elif token in defs.SYMBOLS:
       if token == ';':
           add_in_table = False
@@ -162,22 +158,17 @@ def Get_symbol_table(_token_list):
           if symtable['environment'].split('-')[-1] == str(last_environment):
             symtable['vivo'] = False
 
-  temp = []
-  for dfsymbol in defs.GL_SYMBOL_TABLE:
-    dfsymbol['vivo'] = True
-    temp.append([dfsymbol['token'],dfsymbol['type'],dfsymbol['environment'].split('-')[-1],dfsymbol['line'],dfsymbol['references'],dfsymbol['vivo']])
-  clogger.debug("\nSymbol table:\n{0}\n".format(tabulate(temp, headers=['Token','Type','Environment','Line','References','Vivo'], showindex="always", tablefmt="pretty")))
+  defs.GL_SYMBOL_TABLE = list(reversed(defs.GL_SYMBOL_TABLE))
 
-  temp = []
-  for fcdef in defs.GL_FUNCTION_DEFINITIONS:
-    temp.append([fcdef['name'],fcdef['parameters']])
-  clogger.debug("\nFunctions table:\n{0}\n".format(tabulate(temp, headers=['Function','Parameters'], showindex="always", tablefmt="pretty")))
+  for symtable in defs.GL_SYMBOL_TABLE:
+    symtable['vivo'] = True
 
 def Get_tokens_type(_token_list):
   environment = 0
   defs.GL_ENVIRONMENT.clear()
   defs.GL_ENVIRONMENT.append(environment)
   tokens_types = []
+  considerar = True
 
   for idx, temp_tokens in enumerate(_token_list):
     token = temp_tokens['token']
@@ -187,7 +178,7 @@ def Get_tokens_type(_token_list):
     #! Identificamos si el token es un ID
     if defs.IDENTIFIER.match(token):
       for symtable in defs.GL_SYMBOL_TABLE:
-        if token == symtable['token'] and symtable['vivo']:
+        if token == symtable['token'] and symtable['vivo'] and considerar and int(symtable['environment'].split('-')[-1]) <= defs.GL_ENVIRONMENT[-1]:
           symtable['references'].append(_line_number + 1)
           break;
 
@@ -195,6 +186,8 @@ def Get_tokens_type(_token_list):
       if token in defs.RESERVERD_WORDS:
         dict_token = defs.RESERVERD_WORDS[token]
         dict_number = defs.TOKEN_TYPES_INT[token]
+        if token == 'var':
+          considerar = False
       #! Identificamos si el token es una palabra reservada temporal
       elif token in defs.TEMP_RESERVED_WORDS:
         if token == 'TP_STRING':
@@ -228,6 +221,8 @@ def Get_tokens_type(_token_list):
     elif token in defs.SYMBOLS:
       dict_token = defs.TOKEN_TYPES[defs.SYMBOLS[token]]
       dict_number = defs.TOKEN_TYPES_INT[token]
+      if token == ';':
+        considerar = True
       if token == '{':
         environment += 1
         defs.GL_ENVIRONMENT.append(environment)
@@ -235,7 +230,6 @@ def Get_tokens_type(_token_list):
         last_environment = defs.GL_ENVIRONMENT.pop()
         for symtable in defs.GL_SYMBOL_TABLE:
           if symtable['environment'].split('-')[-1] == str(last_environment):
-
             symtable['vivo'] = False
     else:
       msg = error_manager.get_lexical_error_message(token,_line_number)
@@ -258,6 +252,8 @@ def Get_tokens_type(_token_list):
         token['extra_info'] = ord(codecs.decode(new_value[1:-1], 'unicode_escape'))
       else:
         token['extra_info'] = ord(codecs.decode(token['value'][1:-1], 'unicode_escape'))
+    elif token['token'] == 'LIIN':
+      token['extra_info'] = int(token['value'])
 
   clogger.print_break_line()
   return tokens_types
@@ -330,8 +326,8 @@ def Get_tokens_list_from_file(file_name, debug_mode = False, test_mode = False):
 
       temp = []
       for fcdef in defs.GL_FUNCTION_DEFINITIONS:
-        temp.append([fcdef['name'],fcdef['parameters']])
-      clogger.debug("\nFunctions table:\n{0}\n".format(tabulate(temp, headers=['Function','Parameters'], showindex="always", tablefmt="pretty")))
+        temp.append([fcdef['name'],fcdef['parameters'],fcdef['line']])
+      clogger.debug("\nFunctions table:\n{0}\n".format(tabulate(temp, headers=['Function','Parameters','Line'], showindex="always", tablefmt="pretty")))
 
     return definitions
 

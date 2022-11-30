@@ -4,9 +4,9 @@
 */
 
 // Inverts in-place the contents of an array list.
+var start;
 reverse(array) {
     var start, finish, remainder;
-    var start;
     start = 0;
     finish = size(array) - 1;
     loop {
