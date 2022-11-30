@@ -21,6 +21,19 @@ class ErrorManager(object):
       cls.instance = super(ErrorManager, cls).__new__(cls)
     return cls.instance
 
+  def get_semanctic_error_message(self,_msg,_token,_line_number=0):
+    if _token == None:
+      self.msg += "\nIn line {0} → {1}".format(_line_number - 1, _msg)
+    else:
+      lines = self.file_lines
+      error_position = lines[_line_number - 1].find(_token)
+
+      self.msg += "\nIn line {0}, position {1} → Token \"{2}\" is not valid\n".format(_line_number, error_position + 1, _token)
+      self.msg += lines[_line_number-1].replace('\n','')
+      self.msg += '\n' + ' ' * error_position + '^' + '\n'
+      self.msg += _msg
+    return self.msg
+
   def get_syntax_error_message(self,token,_line_number=0):
     lines = self.file_lines
     error_position = lines[_line_number].find(token)
@@ -34,7 +47,7 @@ class ErrorManager(object):
     lines = self.file_lines
     error_position = lines[_line_number].find(token)
 
-    self.msg += "\nIn line {0}, position {1} → Token {2} is not valid\n".format(_line_number + 1, error_position + 1, token)
+    self.msg += "\nIn line {0}, position {1} → Token \"{2}\" is not valid\n".format(_line_number + 1, error_position + 1, token)
     self.msg += lines[_line_number].replace('\n','')
     self.msg += '\n' + ' ' * error_position + '^'
     self.msg += self.get_lexical_error_info(token)

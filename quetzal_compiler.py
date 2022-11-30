@@ -2,6 +2,7 @@ import os
 import click
 from src.lexical.lexical_reader import Get_tokens_list_from_file
 import src.parser.parser as ps
+import src.semantic.semantic as semantic
 from src.custom_logger import CustomLogger
 
 CURRENT_VERSION = '2.3.1'
@@ -46,15 +47,13 @@ def read_files(initial_path,_files,debug_mode,test):
 def compile(path,debug_mode,test = False):
   definitions = Get_tokens_list_from_file(path,debug_mode,test)
 
-  #Add a new key-value in definitions dictionary with the ascii value of each character of the token
-  for definition_ascii in definitions:
-    definition_ascii['ascii'] = [ord(x) for x in definition_ascii['value']]
-
   if definitions != []:  
-    definitions = ps.analyze_input(definitions)
-    if definitions:
-      clogger.one_line().info("The code has been compiled successfully")
-      clogger.without_format().info("")
+    is_valid = ps.analyze_input(definitions)
+    if is_valid:
+      is_valid = semantic.validate_semantic(definitions, path)
+      if is_valid:
+        clogger.one_line().info("The code has been compiled successfully")
+        clogger.without_format().info("")
 
 if __name__ == "__main__":
   veg()

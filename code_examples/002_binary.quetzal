@@ -4,6 +4,7 @@
 */
 
 // Inverts in-place the contents of an array list.
+var start;
 reverse(array) {
     var start, finish, remainder;
     start = 0;
@@ -41,12 +42,14 @@ binary(num) {
 
 main() {
     var option, num;
+    var reverse;
     loop {
         prints("Input a number: ");
         num = readi();
         prints("Conversion to binary of that number: ");
         prints(binary(num));
         println();
+        reverse = 0;
         prints("Convert another number? ");
         option = reads();
         if (size(option) == 0) {

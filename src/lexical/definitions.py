@@ -3,9 +3,9 @@ import re
 
 class Definitions(object):
   RESERVERD_WORDS = { 
-    "and"   : "and"   , "or"  : "or"  , "break": "break", "if"   : "if"  ,
-    "return": "return", "dec" : "dec" , "inc"  : "inc"  , "elif" : "elif",
-    "loop"  : "loop"  , "var" : "var" , "else" : "else" , "not"  : "not"
+    "and"   : "and"   , "or"   : "or"  , "break": "break", "if"   : "if"  ,
+    "return": "return", "dec"  : "dec" , "inc"  : "inc"  , "elif" : "elif",
+    "loop"  : "loop"  , "var"  : "var" , "else" : "else" , "not"  : "not" ,
   }
 
   OPERATORS = { 
@@ -32,8 +32,7 @@ class Definitions(object):
     'TP_CHAR'       : 'LICH',
     'TP_ES_CHAR'    : 'LICH',
     'TP_UC_CHAR'    : 'LICH',
-    'false'         : 'LIBO',
-    'true'          : 'LIBO',
+    'TP_BOOLEAN'    : 'LIBO',
   }
 
   TOKEN_TYPES_INT = {
@@ -49,7 +48,8 @@ class Definitions(object):
   }
 
   TEMP_RESERVED_WORDS = {
-    'TP_STRING': 'TP_STRING', 'TP_CHAR': 'TP_CHAR', 'TP_ES_CHAR': 'TP_ES_CHAR', 'TP_UC_CHAR': 'TP_UC_CHAR'
+    'TP_STRING': 'TP_STRING', 'TP_CHAR': 'TP_CHAR', 'TP_ES_CHAR': 'TP_ES_CHAR', 'TP_UC_CHAR': 'TP_UC_CHAR',
+    'TP_BOOLEAN': 'TP_BOOLEAN'
   }
 
   IDENTIFIER           = re.compile(r'[A-Za-z][A-Za-z0-9_]*')
@@ -58,6 +58,7 @@ class Definitions(object):
   LITERAL_ESCAPED_CHAR = re.compile(r'(\'\\[tnr\\\'"]\')')
   LITERAL_UNICODE_CHAR = re.compile(r'\'\\u[0-9a-fA-F]{6}\'')
   LITERAL_STRING       = re.compile(r'"(?:[^\\"]|\\.)*"')
+  LITERAL_BOOLEAN      = re.compile(r'(true|false)')
   COMMENT              = re.compile(r"//.*")
   START_COMMENT_BLOCK  = re.compile(r'/\*.*')
   END_COMMENT_BLOCK    = re.compile(r'.*\*/')
@@ -66,7 +67,10 @@ class Definitions(object):
   # Quetzal API
   GL_QUETZAL_API = {}
   GL_SYMBOL_TABLE = []
-  GL_FUNCTION_DEFINITIONS = {}
+  GL_LOOP_SCOPE = []
+  GL_BREAK_SCOPE = []
+  GL_FUNCTION_DEFINITIONS = []
+  GL_FUNCTION_REFERENCES = []
   GL_LISTS = {}
   GL_COMPILERS = {}
   GL_ENVIRONMENT = []
@@ -83,17 +87,17 @@ class Definitions(object):
   GL_SYMBOL_TABLE.append({'token':'get'    , 'type':'Int32', 'environment':'0', 'line':-1, 'references':[], 'vivo': True })
   GL_SYMBOL_TABLE.append({'token':'set'    , 'type':'Int32', 'environment':'0', 'line':-1, 'references':[], 'vivo': True })
 
-  GL_FUNCTION_DEFINITIONS['printi()']  = 1
-  GL_FUNCTION_DEFINITIONS['printc()']  = 1
-  GL_FUNCTION_DEFINITIONS['prints()']  = 1
-  GL_FUNCTION_DEFINITIONS['println()'] = 0
-  GL_FUNCTION_DEFINITIONS['readi()']   = 0
-  GL_FUNCTION_DEFINITIONS['reads()']   = 0
-  GL_FUNCTION_DEFINITIONS['new()']     = 1
-  GL_FUNCTION_DEFINITIONS['size()']    = 1
-  GL_FUNCTION_DEFINITIONS['add()']     = 2
-  GL_FUNCTION_DEFINITIONS['get()']     = 2
-  GL_FUNCTION_DEFINITIONS['set()']     = 3
+  GL_FUNCTION_DEFINITIONS.append({'name':'printi()', 'parameters'  : 1, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'printc()', 'parameters'  : 1, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'prints()', 'parameters'  : 1, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'println()', 'parameters' : 0, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'readi()', 'parameters'   : 0, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'reads()', 'parameters'   : 0, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'new()', 'parameters'     : 1, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'size()', 'parameters'    : 1, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'add()', 'parameters'     : 2, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'get()', 'parameters'     : 2, 'line': -1 })
+  GL_FUNCTION_DEFINITIONS.append({'name':'set()', 'parameters'     : 3, 'line': -1 })
 
   clogger = CustomLogger(name='definitions')
 
